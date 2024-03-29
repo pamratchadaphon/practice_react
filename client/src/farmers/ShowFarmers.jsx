@@ -5,14 +5,24 @@ import { v4 as uuid } from "uuid";
 
 function ShowFarmers() {
     const [data, setData] = useState([])
+    const [deleted, setDelete] = useState(true)
+
     useEffect(() => {
+        if(deleted){
+            setDelete(false)
+        }
         axios.get('/api/farmer/getFarmers')
         .then((res)=>{
             setData(res.data)
         })
         .catch((err)=>console.log(err))
-    },[])
+    },[deleted])
 
+    function handleSubmit(id){
+        axios.delete(`/api/farmer/${id}`)
+        .then((res)=>setDelete(true))
+        .catch((err)=>console.log(err))
+    }
     return (
         <div>
             <h1>All Farmer</h1>
@@ -40,7 +50,7 @@ function ShowFarmers() {
                                 <td>
                                     <Link to={`/farmer/${farmer.id}`}>Detail</Link>
                                     <Link to={`/farmer/edit/${farmer.id}`}>Edit</Link>
-                                    <button>Delete</button>
+                                    <button onClick={()=>handleSubmit(farmer.id)}>Delete</button>
                                 </td>
                             </tr>)
                         })

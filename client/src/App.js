@@ -2,10 +2,10 @@ import React from 'react'
 import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
-import AddFarmer from './screens/AddFarmer'
-import EditFarmer from './screens/EditFarmer'
-import ShowFarmers from './screens/ShowFarmers'
-import FarmerDetail from './screens/FarmerDetail'
+import AddFarmer from './farmers/AddFarmer'
+import EditFarmer from './farmers/EditFarmer'
+import ShowFarmers from './farmers/ShowFarmers'
+import FarmerDetail from './farmers/FarmerDetail'
 
 const App = () => {
   return (
