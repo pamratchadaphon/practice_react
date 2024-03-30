@@ -28,6 +28,9 @@ app.use('/api/disease', routerDisease)
 const routerRicecrop = require('./routes/ricecropRoutes')
 app.use('/api/ricecrop', routerRicecrop)
 
+const routerIncome = require('./routes/incomeRoutes')
+app.use('/api/income', routerIncome)
+
 app.get('/',(req,res) => {
     res.json({ message : 'hii'})
 })

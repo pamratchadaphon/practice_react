@@ -31,6 +31,7 @@ db.Farmer = require('./farmerModel')(sequelize,Datetype)
 db.Variety = require('./varietyModel')(sequelize,Datetype)
 db.Disease = require('./diseaseModel')(sequelize,Datetype)
 db.RiceCrop = require('./ricecropModel')(sequelize,Datetype)
+db.Income = require('./incomeModel')(sequelize,Datetype)
 
 db.sequelize.sync({force:false})
 .then(() => {

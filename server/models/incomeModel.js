@@ -1,16 +1,10 @@
-module.exports = (sequelize,DataTypes) => {
+const { DataTypes } = require("sequelize")
+
+module.exports = (sequelize,Sequelize) => {
     const Income = sequelize.define('Incomes', {
-        IncomeID : {
-            type: DataTypes.STRING,
-            primaryKey: true,
-            autoIncrement: true
-        },
-        CropID : {
-            type: DataTypes.INTEGER,
-            references: {
-                model: 'CropModel', 
-                key: 'id', 
-            },
-        }
+        incomeDetails: DataTypes.STRING,
+        amount: DataTypes.DECIMAL,
+        incomeDate: DataTypes.DATE
     })
+    return Income
 }
