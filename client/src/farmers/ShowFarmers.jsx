@@ -19,6 +19,7 @@ function ShowFarmers() {
     },[deleted])
 
     function handleSubmit(id){
+        alert(`ต้องการลบ farmer ${id}`)
         axios.delete(`/api/farmer/${id}`)
         .then((res)=>setDelete(true))
         .catch((err)=>console.log(err))
@@ -26,7 +27,8 @@ function ShowFarmers() {
     return (
         <div>
             <h1>All Farmer</h1>
-            <table>
+            <Link class="btn btn-success" to={'/addFarmer'}>add</Link>
+            <table class="table table-striped">
                 <thead>
                     <tr>
                         <th>ID</th>
@@ -48,9 +50,9 @@ function ShowFarmers() {
                                 <td>{farmer.province}</td>
                                 <td>{farmer.phone}</td>
                                 <td>
-                                    <Link to={`/farmer/${farmer.id}`}>Detail</Link>
-                                    <Link to={`/farmer/edit/${farmer.id}`}>Edit</Link>
-                                    <button onClick={()=>handleSubmit(farmer.id)}>Delete</button>
+                                    <Link class="btn btn-primary" to={`/farmer/${farmer.id}`}>Detail</Link>
+                                    <Link class="btn btn-warning" to={`/farmer/edit/${farmer.id}`}>Edit</Link>
+                                    <button class="btn btn-danger" onClick={()=>handleSubmit(farmer.id)}>Delete</button>
                                 </td>
                             </tr>)
                         })

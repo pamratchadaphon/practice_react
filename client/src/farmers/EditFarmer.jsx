@@ -1,17 +1,23 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import {useNavigate, useParams } from 'react-router-dom';
 
 const EditFarmer = () => {
-  const [farmerData, setFarmerData] = useState({});
+  const [farmerData, setFarmerData] = useState({
+    fname: '',
+    subdistrict: '',
+    district: '',
+    province: '',
+    phone: ''
+  });
+
   const { id } = useParams();
-  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`/api/farmer/${id}`);
-        setFarmerData(response.data);
+        setFarmerData(response.data); // ตั้งค่าข้อมูลหลังจากดึงข้อมูลสำเร็จ
       } catch (error) {
         console.error('Error fetching farmer data:', error);
       }
@@ -20,74 +26,71 @@ const EditFarmer = () => {
     fetchData();
   }, [id]);
 
-  const handleSummit = async (e) => {
+  const handleInputChange = (e) => {
+    setFarmerData({ ...farmerData, [e.target.name]: e.target.value });
+  };
+
+  const navigator = useNavigate()
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const formData = new FormData(e.target);
-
-      await axios.put(`/api/farmer/${id}`, formData);
-
-      navigate('/');
+      await axios.put(`/api/farmer/${id}`, farmerData);
     } catch (error) {
-      console.error('Error updating farmer:', error);
+      console.error('Error updating farmer data:', error);
     }
+    navigator('/farmers')
   };
 
   return (
     <div>
-      <h1>Edit Farmer {id}</h1>
-      <Link to="/">หน้าหลัก</Link>
-      <form onSubmit={handleSummit}>
+      <form onSubmit={handleSubmit}>
         <div>
-          <label>Name</label>
+          <label>Name:</label>
           <input
-            type="text"
-            name="name"
-            required
-            defaultValue={farmerData.fname}
+            type='text'
+            name='fname'
+            value={farmerData.fname}
+            onChange={handleInputChange}
           />
         </div>
         <div>
-          <label>Subdistrict</label>
+          <label>Subdistrict:</label>
           <input
-            type="text"
-            name="subdistrict"
-            required
-            defaultValue={farmerData.subdistrict}
+            type='text'
+            name='subdistrict'
+            value={farmerData.subdistrict}
+            onChange={handleInputChange}
           />
         </div>
         <div>
-          <label>District</label>
+        <label>District:</label>
           <input
-            type="text"
-            name="district"
-            required
-            defaultValue={farmerData.district}
+            type='text'
+            name='district'
+            value={farmerData.district}
+            onChange={handleInputChange}
           />
         </div>
         <div>
-          <label>Province</label>
+        <label>Province:</label>
           <input
-            type="text"
-            name="province"
-            required
-            defaultValue={farmerData.province}
+            type='text'
+            name='province'
+            value={farmerData.province}
+            onChange={handleInputChange}
           />
         </div>
         <div>
-          <label>Phone</label>
+        <label>Phone:</label>
           <input
-            type="number"
-            name="phone"
-            required
-            defaultValue={farmerData.phone}
+            type='text'
+            name='phone'
+            value={farmerData.phone}
+            onChange={handleInputChange}
           />
         </div>
-        <div>
-          <Link to="/">หน้าหลัก</Link>
-          <button type="submit">บันทึก</button>
-        </div>
+        <button type='submit'>Save</button>
       </form>
     </div>
   );

@@ -48,7 +48,7 @@ const AddFarmer = () => {
             <input type='number' name='subdistrict' required onChange={(e)=>setValues({...values, phone:e.target.value})}/>
           </div>
           <div>
-            <Link to={'/'}>หน้าหลัก</Link>
+            <Link to={'/farmers'}>หน้าหลัก</Link>
             <button type='submit' >บันทึก</button>
           </div>
         </form>

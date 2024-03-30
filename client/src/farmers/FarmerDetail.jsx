@@ -47,7 +47,7 @@ const FarmerDetail = () => {
           <b>เบอร์โทรศัพท์:</b> {farmerData.phone}
         </li>
       </ul>
-      <Link to={'/'}>หน้าหลัก</Link>
+      <Link to={'/farmers'}>หน้าหลัก</Link>
     </div>
   );
 };
