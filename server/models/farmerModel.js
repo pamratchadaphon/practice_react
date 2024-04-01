@@ -7,6 +7,8 @@ module.exports = (sequelize, Sequelize) => {
         district:DataTypes.STRING,
         province:DataTypes.STRING,
         phone: DataTypes.STRING,
+        email: DataTypes.STRING,
+        password: DataTypes.STRING
     });
 
     return Farmer;

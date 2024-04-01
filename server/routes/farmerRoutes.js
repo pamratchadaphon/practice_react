@@ -7,5 +7,7 @@ router.get('/getFarmers', farmerController.getAllFarmer)
 router.get('/:id', farmerController.getOneFarmer)
 router.put('/:id', farmerController.updateFarmer)
 router.delete('/:id', farmerController.deleteFarmer)
+router.post('/login', farmerController.login);
+router.post('/authen', farmerController.authen)
 
 module.exports = router
