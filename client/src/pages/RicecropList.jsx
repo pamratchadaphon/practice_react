@@ -6,7 +6,9 @@ import Sidebar from '../components/Sidebar';
 
 const Ricecrop = () => {
   const [data, setData] = useState([]);
+  const [databyID, setDatabyID] = useState([]);
   const { id } = useParams();
+  const idAsInt = Number(id); // ใช้ Number() เพื่อแปลงเป็น integer
 
   useEffect(() => {
     const fetchData = async () => {
@@ -33,7 +35,7 @@ const Ricecrop = () => {
           localStorage.removeItem('token');
           window.location.href = '/';
         }
-      } catch (error) {
+      } catch (error) { 
         console.error("Error:", error);
         alert('An error occurred while fetching data');
         window.location.href = '/';
@@ -42,20 +44,24 @@ const Ricecrop = () => {
   
     fetchData();
   }, []);
-  
+
+  useEffect(() => {
+    const filteredData = data.filter(farmer => farmer.farmerID === idAsInt);
+    setDatabyID(filteredData);
+  }, [data, idAsInt]);
 
   return (
     <div className='flex'>
       <div className='basis-[16%] h-[100vh]'>
-        <Sidebar id={id}/>
+        <Sidebar idFarmer={idAsInt}/>
       </div>
       <div className='basis-[84%] border'>
         <div className='px-[30px] py-[30px]'>
-          <Link className="btn btn-secondary" style={{float: 'right'}} to={'/CreateRicecrop/:id'}>เพิ่มข้อมูล</Link>
+          <Link className="btn btn-secondary" style={{float: 'right'}} to={`/CreateRicecrop/${id}`}>เพิ่มข้อมูล</Link>
           <table className="table table-striped">
             <thead>
               <tr>
-                <th className="text-center">#</th>
+                <th className="text-center">รอบการปลูก</th>
                 <th className="text-center">ปี</th>
                 <th className="text-center">วันที่เริ่มต้น</th>
                 <th className="text-center">วันที่สิ้นสุด</th>
@@ -64,20 +70,18 @@ const Ricecrop = () => {
               </tr>
             </thead>
             <tbody>
-              {data.map((ricecrop) => {
-                return (
-                  <tr key={uuid()}>
-                    <td className="text-center">{ricecrop.id}</td>
-                    <td className="text-center">{ricecrop.year}</td>
-                    <td className="text-center">{ricecrop.startDate}</td>
-                    <td className="text-center">{ricecrop.endDate}</td>
-                    <td className="text-center">
-                      <Link className="btn btn-primary" to={`/RicecropDetail/${ricecrop.id}`}>ดูรายละเอียด</Link>
-                    </td>
-                    <td className="text-center">{ricecrop.farmerID}</td>
-                  </tr>
-                );
-              })}
+              {databyID.map((ricecrop) => (
+                <tr key={uuid()}>
+                  <td className="text-center">{ricecrop.id}</td>
+                  <td className="text-center">{ricecrop.year}</td>
+                  <td className="text-center">{ricecrop.startDate}</td>
+                  <td className="text-center">{ricecrop.endDate}</td>
+                  <td className="text-center">
+                    <Link className="btn btn-primary" to={`/RicecropDetail/${idAsInt}/${ricecrop.id}`}>ดูรายละเอียด</Link>
+                  </td>
+                  <td className="text-center">{ricecrop.farmerID}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

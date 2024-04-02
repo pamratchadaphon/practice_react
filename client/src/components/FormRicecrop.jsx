@@ -3,21 +3,21 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 
 const FormRicecrop = () => {
-    const  [values, setValues] = useState({
-        year: '',
-        startDate: '',
-        endDate: '',
-        farmerID: 1
-      })
-    const navigator = useNavigate()
+  const  [values, setValues] = useState({
+      year: '',
+      startDate: '',
+      endDate: '',
+      farmerID: 1
+    })
+  const navigator = useNavigate()
 
-    function handleSummit(e) {
-        e.preventDefault()
+  function handleSummit(e) {
+      e.preventDefault()
 
-        axios.post('/api/ricecrop/addRicecrop', values)
-            .then((res)=>console.log(res))
-            .catch((err)=>console.log(err))
-        navigator('/')
+      axios.post('/api/ricecrop/addRicecrop', values)
+          .then((res)=>console.log(res))
+          .catch((err)=>console.log(err))
+      navigator('/')
   }
   return (
     <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">

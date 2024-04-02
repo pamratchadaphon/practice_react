@@ -4,7 +4,7 @@ import { FaTachometerAlt, FaBook,FaLeaf, FaSeedling } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Sidebar = (props) => {
-  const id = props.id
+  const id = props.idFarmer
   const handleLogout = () => {
     localStorage.removeItem('token');
     window.location = '/';
