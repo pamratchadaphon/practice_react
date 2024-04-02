@@ -36,6 +36,7 @@ export default function SignUp() {
           email: formData.get('email'),
           password: formData.get('password'),
           fname: formData.get('fname'),
+          lname: formData.get('lname'),
           subdistrict: formData.get('subdistrict'),
           district: formData.get('district'),
           province: formData.get('province'),
@@ -113,6 +114,17 @@ export default function SignUp() {
                   type="text"
                   id="fname"
                   autoComplete="fname"
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
+                  name="lname"
+                  label="lname"
+                  type="text"
+                  id="lname"
+                  autoComplete="lname"
                 />
               </Grid>
               <Grid item xs={12}>

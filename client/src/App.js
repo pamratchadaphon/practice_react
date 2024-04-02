@@ -27,6 +27,7 @@ const App = () => {
         <Route path='/CreateRicecrop/:id' element={<CreateRicecrop/>}/>
         <Route path='/Income/:idFarmer/:idRicecrop' element={<Income/>}/>
         <Route path='/' element={<Login/>}/>
+
       </Routes>
     </BrowserRouter>
   )

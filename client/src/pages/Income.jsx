@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const CreateRicecrop = () => {
   const { idFarmer, idRicecrop } = useParams();
-//   const idAsInt = Number(idRicecrop);
+  //   const idAsInt = Number(idRicecrop);
   const [values, setValues] = useState({
     incomeDate: "",
     incomeDetails: "",
     amount: "",
+    farmerID: idFarmer,
+    RicecropID: idRicecrop,
   });
   const navigate = useNavigate(); // แก้จาก navigator เป็น navigate
 
@@ -20,13 +22,35 @@ const CreateRicecrop = () => {
       .post("/api/income/addIncome", values)
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
-      alert('บันทึกรายรับเสร็จสิ้น')
+    alert("บันทึกรายรับเสร็จสิ้น");
     navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`); // แก้จาก navigator(`/ricecrop/${id}`) เป็น navigate(`/ricecrop/${id}`)
   }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        
+        if (!token) {
+          window.location.href = '/';
+          return;
+        }
+  
+        const config = {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        };
+        axios.post('http://localhost:8080/api/farmer/authen', null, config);
+      } catch (error) {
+        console.error("Error fetching ricecrop data:", error);
+      }
+    };
+    fetchData();
+  });
   return (
     <div className="flex">
       <div className="basis-[16%] h-[100vh]">
-        <Sidebar />
+        <Sidebar idFarmer={idFarmer} />
       </div>
       <div className="basis-[84%] border">
         <div className="px-[30px] py-[30px]">
