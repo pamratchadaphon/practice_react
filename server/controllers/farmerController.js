@@ -34,6 +34,7 @@ const addFarmer = async (req, res) => {
     const hashedPassword = await bcrypt.hash(req.body.password, saltRounds);
     const newFarmer = await Farmer.create({
         fname: req.body.fname,
+        lname: req.body.lname,
         subdistrict: req.body.subdistrict,
         district: req.body.district,
         province: req.body.province,

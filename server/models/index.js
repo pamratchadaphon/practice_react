@@ -38,7 +38,7 @@ db.sequelize.sync({force:false})
     console.log('yes re-sync done!');
 })
 
-//1 to many
+//1 to many ชาวนา1 รอบการปลูกM
 db.Farmer.hasMany(db.RiceCrop, {
     foreignKey: 'farmerID',
     as: 'RiceCrop'
@@ -46,6 +46,26 @@ db.Farmer.hasMany(db.RiceCrop, {
 db.RiceCrop.belongsTo(db.Farmer, {
     foreignKey: 'farmerID',
     as: 'Farmer'
+})
+
+//1 to many ชาวนา1 รายรับM
+db.Farmer.hasMany(db.Income, {
+    foreignKey: 'farmerID',
+    as: 'Income'
+})
+db.Income.belongsTo(db.Farmer, {
+    foreignKey: 'farmerID',
+    as: 'Farmer'
+})
+
+//1 to many รอบการปลูก1 รายรับM
+db.RiceCrop.hasMany(db.Income, {
+    foreignKey: 'RicecropID',
+    as: 'Income'
+})
+db.Income.belongsTo(db.RiceCrop, {
+    foreignKey: 'RicecropID',
+    as: 'RiceCrop'
 })
 
 module.exports = db

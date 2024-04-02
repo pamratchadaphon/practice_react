@@ -3,6 +3,7 @@ const { DataTypes } = require('sequelize');
 module.exports = (sequelize, Sequelize) => {
     const Farmer = sequelize.define("Farmer", {
         fname: DataTypes.STRING,
+        lname: DataTypes.STRING,
         subdistrict: DataTypes.STRING,
         district:DataTypes.STRING,
         province:DataTypes.STRING,
