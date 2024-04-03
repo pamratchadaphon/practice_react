@@ -83,12 +83,25 @@ const deleteFarmer = async (req, res) => {
 
 // เรียกข้อมูลเกษตรกรพร้อมข้อมูลของข้าว
 const getFarmerRicecrop = async (req, res) => {
+    let id = req.params.farmerID;
     const data = await Farmer.findAll({
         include: [{ 
             model: db.RiceCrop,
             as: 'RiceCrop'
         }],
-        where: { id: 1 }
+        where: { id: id }
+    });
+    res.status(200).send(data);
+};
+
+const getFarmerIncome = async (req, res) => {
+    let id = req.params.farmerID;
+    const data = await Farmer.findAll({
+        include: [{ 
+            model: db.Income,
+            as: 'Income'
+        }],
+        where: { id: id }
     });
     res.status(200).send(data);
 };
@@ -101,5 +114,6 @@ module.exports = {
     updateFarmer,
     deleteFarmer,
     getFarmerRicecrop,
-    authen
+    authen,
+    getFarmerIncome
 };

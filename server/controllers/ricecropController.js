@@ -21,5 +21,22 @@ module.exports = {
     async deleteRicecrop (req,res) {
         await Ricecrop.destroy({ where: { id: req.params.id } })
         res.status(200).send('ricecrop is deleted!')
+    },
+    async getRicecropIncomeExpense (req,res){
+        let id = req.params.ricecropID
+        const data = await Ricecrop.findAll({
+            include: [
+                {
+                    model: db.Income,
+                    as: 'Income'
+                },
+                {
+                    model: db.Expanses,
+                    as: 'Expense'
+                }
+            ],
+            where: {id: id}
+        })
+        res.status(200).send(data)
     }
 }

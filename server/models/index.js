@@ -32,6 +32,7 @@ db.Variety = require('./varietyModel')(sequelize,Datetype)
 db.Disease = require('./diseaseModel')(sequelize,Datetype)
 db.RiceCrop = require('./ricecropModel')(sequelize,Datetype)
 db.Income = require('./incomeModel')(sequelize,Datetype)
+db.Expanses = require('./expensesModel')(sequelize,Datetype)
 
 db.sequelize.sync({force:false})
 .then(() => {
@@ -60,12 +61,32 @@ db.Income.belongsTo(db.Farmer, {
 
 //1 to many รอบการปลูก1 รายรับM
 db.RiceCrop.hasMany(db.Income, {
-    foreignKey: 'RicecropID',
+    foreignKey: 'ricecropID',
     as: 'Income'
 })
 db.Income.belongsTo(db.RiceCrop, {
-    foreignKey: 'RicecropID',
+    foreignKey: 'ricecropID',
     as: 'RiceCrop'
+})
+
+//1 to many รอบการปลูก1 รายรับM
+db.RiceCrop.hasMany(db.Expanses, {
+    foreignKey: 'ricecropID',
+    as: 'Expense'
+})
+db.Expanses.belongsTo(db.RiceCrop, {
+    foreignKey: 'ricecropID',
+    as: 'RiceCrop'
+})
+
+//1 to many ชาวนา1 รายรับM
+db.Farmer.hasMany(db.Expanses, {
+    foreignKey: 'farmerID',
+    as: 'Expanse'
+})
+db.Expanses.belongsTo(db.Farmer, {
+    foreignKey: 'farmerID',
+    as: 'Farmer'
 })
 
 module.exports = db
