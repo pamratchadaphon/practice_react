@@ -49,7 +49,16 @@ const Ricecrop = () => {
     const filteredData = data.filter(farmer => farmer.farmerID === idAsInt);
     setDatabyID(filteredData);
   }, [data, idAsInt]);
-
+  // ฟังก์ชันสำหรับการแปลงวันที่ให้เป็นรูปแบบ "dd-mm-yyyy"
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    const day = date.getDate();
+    const month = date.getMonth() + 1;
+    const year = date.getFullYear() + 543;
+    return `${day < 10 ? "0" + day : day}/${
+      month < 10 ? "0" + month : month
+    }/${year}`;
+  };
   return (
     <div className='flex'>
       <div className='basis-[16%] h-[100vh]'>
@@ -61,10 +70,12 @@ const Ricecrop = () => {
           <table className="table table-striped">
             <thead>
               <tr>
-                <th className="text-center">รอบการปลูก</th>
+                <th className="text-center">รหัสรอบการปลูก</th>
                 <th className="text-center">ปี</th>
-                <th className="text-center">วันที่เริ่มต้น</th>
-                <th className="text-center">วันที่สิ้นสุด</th>
+                <th className="text-center">วันที่ปลูก</th>
+                <th className="text-center">วันที่เก็บเกี่ยว</th>
+                <th className="text-center">พันธ์ุข้าว</th>
+                <th className="text-center">พื้นที่ปลูก (ไร่)</th>
                 <th className="text-center">ดูรายละเอียด</th>
                 <th className="text-center">รหัสเกษตรกร</th>
               </tr>
@@ -74,8 +85,10 @@ const Ricecrop = () => {
                 <tr key={uuid()}>
                   <td className="text-center">{ricecrop.id}</td>
                   <td className="text-center">{ricecrop.year}</td>
-                  <td className="text-center">{ricecrop.startDate}</td>
-                  <td className="text-center">{ricecrop.endDate}</td>
+                  <td className="text-center">{formatDate(ricecrop.startDate)}</td>
+                  <td className="text-center">{formatDate(ricecrop.endDate)}</td>
+                  <td className="text-center">{ricecrop.riceVarietie}</td>
+                  <td className="text-center">{ricecrop.area}</td>
                   <td className="text-center">
                     <Link className="btn btn-primary" to={`/RicecropDetail/${idAsInt}/${ricecrop.id}`}>ดูรายละเอียด</Link>
                   </td>

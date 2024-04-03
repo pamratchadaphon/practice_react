@@ -12,6 +12,7 @@ import CreateRicecrop from './pages/CreateRicecrop'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Income from './pages/Income.jsx'
+import Expense from './pages/Expense.jsx'
 
 const App = () => {
   return (
@@ -26,6 +27,7 @@ const App = () => {
         <Route path='/register' element={<Register/>}/>
         <Route path='/CreateRicecrop/:id' element={<CreateRicecrop/>}/>
         <Route path='/Income/:idFarmer/:idRicecrop' element={<Income/>}/>
+        <Route path='/Expense/:idFarmer/:idRicecrop' element={<Expense/>}/>
         <Route path='/' element={<Login/>}/>
 
       </Routes>

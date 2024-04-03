@@ -3,27 +3,25 @@ import Sidebar from "../components/Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-const CreateRicecrop = () => {
+const Expense = () => {
   const { idFarmer, idRicecrop } = useParams();
-  //   const idAsInt = Number(idRicecrop);
   const [values, setValues] = useState({
-    incomeDate: "",
-    incomeDetails: "",
     amount: "",
+    date: "",
+    detail: "",
     farmerID: idFarmer,
     ricecropID: idRicecrop,
   });
-  const navigate = useNavigate(); // แก้จาก navigator เป็น navigate
+  const navigate = useNavigate();
 
   function handleSubmit(e) {
-    // แก้จาก handleSummit เป็น handleSubmit
     e.preventDefault();
     axios
-      .post("/api/income/addIncome", values)
+      .post("/api/expense/addExpense", values)
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
-    alert("บันทึกรายรับเสร็จสิ้น");
-    navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`); // แก้จาก navigator(`/ricecrop/${id}`) เป็น navigate(`/ricecrop/${id}`)
+    alert("บันทึกรายจ่ายเสร็จสิ้น");
+    navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`); 
   }
   useEffect(() => {
     const fetchData = async () => {
@@ -57,26 +55,25 @@ const CreateRicecrop = () => {
           <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
             <div className="sm:mx-auto sm:w-full sm:max-w-sm">
               <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-                บันทึกรายรับ
+                บันทึกรายจ่าย
               </h2>
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
               <form onSubmit={handleSubmit}>
                 {" "}
-                {/* แก้จาก handleSummit เป็น handleSubmit */}
                 <div>
                   <label className="block text-sm font-medium leading-6 text-gray-900">
                     วันที่
                   </label>
                   <div className="mt-2">
                     <input
-                      id="incomeDate"
-                      name="incomeDate"
+                      id="date"
+                      name="date"
                       type="date"
                       required
                       onChange={(e) =>
-                        setValues({ ...values, incomeDate: e.target.value })
+                        setValues({ ...values, date: e.target.value })
                       }
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -90,13 +87,13 @@ const CreateRicecrop = () => {
                   </div>
                   <div className="mt-2">
                     <input
-                      id="incomeDetails"
-                      name="incomeDetails"
+                      id="detail"
+                      name="detail"
                       type="text"
-                      autoComplete="incomeDetails"
+                      autoComplete="datail"
                       required
                       onChange={(e) =>
-                        setValues({ ...values, incomeDetails: e.target.value })
+                        setValues({ ...values, datail: e.target.value })
                       }
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -139,4 +136,4 @@ const CreateRicecrop = () => {
   );
 };
 
-export default CreateRicecrop;
+export default Expense;
