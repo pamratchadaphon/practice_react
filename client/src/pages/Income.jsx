@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
 const CreateRicecrop = () => {
   const { idFarmer, idRicecrop } = useParams();
-  //   const idAsInt = Number(idRicecrop);
   const [values, setValues] = useState({
     incomeDate: "",
     incomeDetails: "",
@@ -13,18 +12,25 @@ const CreateRicecrop = () => {
     farmerID: idFarmer,
     ricecropID: idRicecrop,
   });
-  const navigate = useNavigate(); // แก้จาก navigator เป็น navigate
+  const navigate = useNavigate(); 
 
-  function handleSubmit(e) {
-    // แก้จาก handleSummit เป็น handleSubmit
+  const handleSubmit = (e) => {
     e.preventDefault();
     axios
       .post("/api/income/addIncome", values)
-      .then((res) => console.log(res))
+      .then((res) => {
+        console.log(res); 
+        console.log(res.data.createdAt);
+        const createdAtDate = new Date(res.data.incomeDate);
+        const month = createdAtDate.getMonth() + 1;
+        const monthValue = month;
+        // ส่งข้อมูลผ่าน state ไปยังหน้าถัดไป
+        navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`, { state: { monthValue ,amount: res.data.amount} });
+      })
       .catch((err) => console.log(err));
     alert("บันทึกรายรับเสร็จสิ้น");
-    navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`); // แก้จาก navigator(`/ricecrop/${id}`) เป็น navigate(`/ricecrop/${id}`)
   }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -46,7 +52,8 @@ const CreateRicecrop = () => {
       }
     };
     fetchData();
-  });
+  }, [idRicecrop]);
+
   return (
     <div className="flex">
       <div className="basis-[16%] h-[100vh]">
@@ -76,7 +83,7 @@ const CreateRicecrop = () => {
                       type="date"
                       required
                       onChange={(e) =>
-                        setValues({ ...values, incomeDate: e.target.value })
+                        setValues((prevState) => ({ ...prevState, incomeDate: e.target.value }))
                       }
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -96,7 +103,7 @@ const CreateRicecrop = () => {
                       autoComplete="incomeDetails"
                       required
                       onChange={(e) =>
-                        setValues({ ...values, incomeDetails: e.target.value })
+                        setValues((prevState) => ({ ...prevState, incomeDetails: e.target.value }))
                       }
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />
@@ -116,7 +123,7 @@ const CreateRicecrop = () => {
                       autoComplete="amount"
                       required
                       onChange={(e) =>
-                        setValues({ ...values, amount: e.target.value })
+                        setValues((prevState) => ({ ...prevState, amount: e.target.value }))
                       }
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />

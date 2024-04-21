@@ -13,6 +13,8 @@ import Login from './pages/Login'
 import Register from './pages/Register'
 import Income from './pages/Income.jsx'
 import Expense from './pages/Expense.jsx'
+import Barchart from './components/Barchart.jsx';
+import RicecropDetailMonth from './pages/RicecropDetailMonth.jsx';
 
 const App = () => {
   return (
@@ -29,7 +31,8 @@ const App = () => {
         <Route path='/Income/:idFarmer/:idRicecrop' element={<Income/>}/>
         <Route path='/Expense/:idFarmer/:idRicecrop' element={<Expense/>}/>
         <Route path='/' element={<Login/>}/>
-
+        <Route path='/bar' element={<Barchart/>}/>
+        <Route path='/RicecropDetailMonth/:idFarmer/:idRicecrop' element={<RicecropDetailMonth/>}/>
       </Routes>
     </BrowserRouter>
   )

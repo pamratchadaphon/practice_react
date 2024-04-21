@@ -4,7 +4,7 @@ import { FaTachometerAlt,FaLeaf, FaSeedling } from 'react-icons/fa';
 import { Link } from 'react-router-dom';
 
 const Sidebar = (props) => {
-  const id = props.idFarmer
+  const {idFarmer, fname, lname} = props
   const handleLogout = () => {
     localStorage.removeItem('token');
     window.location = '/';
@@ -13,13 +13,15 @@ const Sidebar = (props) => {
     <div className='bg-[#15803d] h-screen px-[25px]'>
       <div className='px-[15px] py-[30px] flex items-center justify-center'>
         <LiaUserCircle color='white'/>
-        <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'>ชื่อผู้ใช้</h1>
+        <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'>
+          {fname} {lname}
+        </h1>
       </div>
       <div className='pt-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
         <p className='text-[10px] font-extrabold leading-[16px] text-white/[0.4]'>MENU</p>
         {/* เพิ่มลิงค์และข้อมูลเกี่ยวกับรอบการปลูกข้าว */}
         <div className='flex items-center gap-[15px] py-[15px] pt-0 border-b-[1px] border-[#EDEDED]/[0.3]'>
-          <Link to={`/ricecrop/${id}`} className="flex items-center gap-2 text-white text-[14px] leading-[20px] font-bold hover:underline" style={{ textDecoration: 'none' }}>
+          <Link to={`/ricecrop/${idFarmer}`} className="flex items-center gap-2 text-white text-[14px] leading-[20px] font-bold hover:underline" style={{ textDecoration: 'none' }}>
           <FaTachometerAlt color='white' />
           <span>รอบการปลูกข้าว</span>
           </Link>
