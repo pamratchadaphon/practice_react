@@ -7,7 +7,7 @@ const Expense = () => {
   const { idFarmer, idRicecrop } = useParams();
   const [values, setValues] = useState({
     amount: "",
-    date: "",
+    date: new Date().toISOString().split('T')[0], 
     detail: "",
     farmerID: idFarmer,
     ricecropID: idRicecrop,
@@ -21,30 +21,31 @@ const Expense = () => {
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
     alert("บันทึกรายจ่ายเสร็จสิ้น");
-    navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`); 
+    navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`);
   }
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        
+        const token = localStorage.getItem("token");
+
         if (!token) {
-          window.location.href = '/';
+          window.location.href = "/";
           return;
         }
-  
+
         const config = {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         };
-        axios.post('http://localhost:8080/api/farmer/authen', null, config);
+        axios.post("http://localhost:8080/api/farmer/authen", null, config);
       } catch (error) {
         console.error("Error fetching ricecrop data:", error);
       }
     };
     fetchData();
   });
+  
   return (
     <div className="flex">
       <div className="basis-[16%] h-[100vh]">
@@ -72,6 +73,7 @@ const Expense = () => {
                       name="date"
                       type="date"
                       required
+                      value={values.date}
                       onChange={(e) =>
                         setValues({ ...values, date: e.target.value })
                       }
@@ -86,7 +88,42 @@ const Expense = () => {
                     </label>
                   </div>
                   <div className="mt-2">
-                    <input
+                  <select
+                      id="detail"
+                      name="detail"
+                      required
+                      value={values.detail}
+                      onChange={(e) =>
+                        setValues({ ...values, detail: e.target.value })
+                      }
+                      className="block w-full mt-1 border-black focus:border-indigo-300 focus:ring focus:ring-indigo-200 rounded-md shadow-sm"
+                    >
+                      <option value="">-- เลือกรายการ --</option>
+                      {[
+                        "ไถนา",
+                        "เมล็ดพันธ์ุข้าว",
+                        "ปั่นนา",
+                        "จ้างคนย่ำนา",
+                        "รถดำนา",
+                        "ค่าจ้างคนหว่านเมล็ดพันธุ์ข้าว",
+                        "ปุ๋ยเคมี",
+                        "ค่าจ้างคนหว่านปุ๋ยเคมี",
+                        "รถดำนา",
+                        "ยาคุมหญ้า",
+                        "ยาป้องกันแมลง",
+                        "ยาฆ่าแมลง",
+                        "น้ำมันเชื้อเพลิง",
+                        "เช่านา",
+                        "รถเข็นข้าว",
+                        "รถเกี่ยว"
+                      ].map((list, index) => (
+                        <option key={index} value={list}>
+                          {list}
+                        </option>
+                      ))}
+                    </select>
+
+                    {/* <input
                       id="detail"
                       name="detail"
                       type="text"
@@ -96,13 +133,13 @@ const Expense = () => {
                         setValues({ ...values, datail: e.target.value })
                       }
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
+                    /> */}
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between">
                     <label className="block text-sm font-medium leading-6 text-gray-900">
-                      ราคา
+                      ราคา 
                     </label>
                   </div>
                   <div className="mt-2">

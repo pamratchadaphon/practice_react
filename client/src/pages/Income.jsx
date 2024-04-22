@@ -6,7 +6,7 @@ import axios from "axios";
 const CreateRicecrop = () => {
   const { idFarmer, idRicecrop } = useParams();
   const [values, setValues] = useState({
-    incomeDate: "",
+    incomeDate: new Date().toISOString().split('T')[0],
     incomeDetails: "",
     amount: "",
     farmerID: idFarmer,
@@ -19,13 +19,15 @@ const CreateRicecrop = () => {
     axios
       .post("/api/income/addIncome", values)
       .then((res) => {
-        console.log(res); 
-        console.log(res.data.createdAt);
-        const createdAtDate = new Date(res.data.incomeDate);
-        const month = createdAtDate.getMonth() + 1;
-        const monthValue = month;
-        // ส่งข้อมูลผ่าน state ไปยังหน้าถัดไป
-        navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`, { state: { monthValue ,amount: res.data.amount} });
+        const date = new Date(res.data.incomeDate);
+        const month = date.getMonth() + 1;
+        console.log(month); 
+        // console.log(res.data.createdAt);
+        // const createdAtDate = new Date(res.data.incomeDate);
+        // const month = createdAtDate.getMonth() + 1;
+        // const monthValue = month;
+        // , { state: { monthValue ,amount: res.data.amount} }
+        navigate(`/RicecropDetailMonth/${idFarmer}/${idRicecrop}`, { state: { month : {month}} });
       })
       .catch((err) => console.log(err));
     alert("บันทึกรายรับเสร็จสิ้น");
@@ -71,7 +73,6 @@ const CreateRicecrop = () => {
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
               <form onSubmit={handleSubmit}>
                 {" "}
-                {/* แก้จาก handleSummit เป็น handleSubmit */}
                 <div>
                   <label className="block text-sm font-medium leading-6 text-gray-900">
                     วันที่
@@ -82,6 +83,7 @@ const CreateRicecrop = () => {
                       name="incomeDate"
                       type="date"
                       required
+                      value={values.incomeDate}
                       onChange={(e) =>
                         setValues((prevState) => ({ ...prevState, incomeDate: e.target.value }))
                       }
