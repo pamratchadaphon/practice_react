@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import { TextField, Button} from "@mui/material";
 
 const CreateRicecrop = () => {
   const { idFarmer, idRicecrop } = useParams();
@@ -71,75 +72,48 @@ const CreateRicecrop = () => {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-              <form onSubmit={handleSubmit}>
-                {" "}
-                <div>
-                  <label className="block text-sm font-medium leading-6 text-gray-900">
-                    วันที่
-                  </label>
-                  <div className="mt-2">
-                    <input
-                      id="incomeDate"
-                      name="incomeDate"
-                      type="date"
-                      required
-                      value={values.incomeDate}
-                      onChange={(e) =>
-                        setValues((prevState) => ({ ...prevState, incomeDate: e.target.value }))
-                      }
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium leading-6 text-gray-900">
-                      รายการ
-                    </label>
-                  </div>
-                  <div className="mt-2">
-                    <input
-                      id="incomeDetails"
-                      name="incomeDetails"
-                      type="text"
-                      autoComplete="incomeDetails"
-                      required
-                      onChange={(e) =>
-                        setValues((prevState) => ({ ...prevState, incomeDetails: e.target.value }))
-                      }
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <div className="flex items-center justify-between">
-                    <label className="block text-sm font-medium leading-6 text-gray-900">
-                      ราคา
-                    </label>
-                  </div>
-                  <div className="mt-2">
-                    <input
-                      id="amount"
-                      name="amount"
-                      type="number"
-                      autoComplete="amount"
-                      required
-                      onChange={(e) =>
-                        setValues((prevState) => ({ ...prevState, amount: e.target.value }))
-                      }
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <button
-                    type="submit"
-                    className="flex w-full justify-center rounded-md bg-green-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                  >
-                    เพิ่ม
-                  </button>
-                </div>
-              </form>
+            <form onSubmit={handleSubmit} sx={{ mt: 3 }}>
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="incomeDate"
+            label="วันที่"
+            type="date"
+            InputLabelProps={{ shrink: true }} // Adjust label behavior
+            value={values.incomeDate}
+            onChange={(e) =>
+              setValues((prevState) => ({ ...prevState, incomeDate: e.target.value }))
+            }
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="incomeDetails"
+            label="รายการ"
+            type="text"
+            InputLabelProps={{ shrink: true }}
+            value={values.incomeDetails}
+            onChange={(e) =>
+              setValues((prevState) => ({ ...prevState, incomeDetails: e.target.value }))
+            }
+          />
+          <TextField
+            margin="normal"
+            required
+            fullWidth
+            id="amount"
+            label="ราคา"
+            type="number"
+            InputLabelProps={{ shrink: true }}
+            value={values.amount}
+            onChange={(e) => setValues((prevState) => ({ ...prevState, amount: e.target.value }))}
+          />
+          <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
+            เพิ่ม
+          </Button>
+        </form>
             </div>
           </div>
         </div>

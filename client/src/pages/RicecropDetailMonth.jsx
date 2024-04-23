@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import Sidebar from "../components/Sidebar";
-import { Link, useParams} from "react-router-dom";
+import { useParams } from "react-router-dom";
 import axios from "axios";
 import { v4 as uuid } from "uuid";
-import { FaPencilAlt,FaMoneyBillAlt } from "react-icons/fa";
+import { FaPencilAlt } from "react-icons/fa";
 import { FiTrash2 } from "react-icons/fi";
-
+import IncomeModal from "../components/IncomeModal";
 
 const RicecropDetailMonth = (props) => {
-  console.log(props.month);
   const { idFarmer, idRicecrop } = useParams();
   const idAsInt = Number(idFarmer);
   const [data, setData] = useState({});
@@ -19,11 +18,17 @@ const RicecropDetailMonth = (props) => {
   const [monthInt, setMonthInt] = useState(0);
   const [incomeMonth, setIncomeMonth] = useState([]);
   const [expenseMonth, setExpenseMonth] = useState([]);
-  const [deleteIncome, setDeleteIncome] = useState(true)
-  const [deleteExpense, setDeleteExpense] = useState(true)
+  const [deleteIncome, setDeleteIncome] = useState(true);
+  const [deleteExpense, setDeleteExpense] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [selectedIncome, setSelectedIncome] = useState({});
+
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const handleMonthChange = (event) => {
     setSelectedMonth(event.target.value);
   };
+  useEffect(() => {}, [selectedIncome]);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -49,7 +54,6 @@ const RicecropDetailMonth = (props) => {
             `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
           );
           setData(ricecropResponse.data[0]);
-          console.log(ricecropResponse.data[0]);
 
           const startDate = new Date(ricecropResponse.data[0].startDate);
           const startMonth = startDate.getMonth() + 1;
@@ -151,7 +155,6 @@ const RicecropDetailMonth = (props) => {
     });
 
     setExpenseMonth(monthE);
-    console.log(expenseMonth);
 
     const totalExpense =
       monthE.reduce((accumulator, currentValue) => {
@@ -166,7 +169,6 @@ const RicecropDetailMonth = (props) => {
     });
 
     setIncomeMonth(monthI);
-    console.log(monthI);
 
     const totalIncome =
       monthI.reduce((accumulator, currentValue) => {
@@ -185,36 +187,37 @@ const RicecropDetailMonth = (props) => {
     }-${year}`;
   };
 
-  function onClickDeleteIncome (idIncome) {
-    alert(`ยืนยันการลบรายรับรายการที่ ${idIncome}`)
-    axios.delete(`/api/income/deleteIncome/${idIncome}`)
-    .then((res) => {
-      setDeleteIncome(true);
-      window.location.reload(); 
-    })
-    .catch((err)=>console.log(err))
+  function onClickDeleteIncome(idIncome) {
+    alert(`ยืนยันการลบรายรับรายการที่ ${idIncome}`);
+    axios
+      .delete(`/api/income/deleteIncome/${idIncome}`)
+      .then((res) => {
+        setDeleteIncome(true);
+        // window.location.reload();
+      })
+      .catch((err) => console.log(err));
   }
 
-  function onClickDeleteExpense (idExpense) {
-    alert(`ยืนยันการลบรายรับรายการที่ ${idExpense}`)
-    axios.delete(`/api/expense/deleteExpense/${idExpense}`)
-    .then((res) => {
-      setDeleteExpense(true);
-      // window.location.reload(); 
-    })
-    .catch((err)=>console.log(err))
+  function onClickDeleteExpense(idExpense) {
+    alert(`ยืนยันการลบรายรับรายการที่ ${idExpense}`);
+    axios
+      .delete(`/api/expense/deleteExpense/${idExpense}`)
+      .then((res) => {
+        setDeleteExpense(true);
+        // window.location.reload();
+      })
+      .catch((err) => console.log(err));
   }
 
   useEffect(() => {
-    if(deleteIncome){
-        setDeleteIncome(false)
+    if (deleteIncome) {
+      setDeleteIncome(false);
     }
-    axios.get(`/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`)
-    .then((res)=>{
-        console.log(res.data);
-    })
-    .catch((err)=>console.log(err))
-  },[deleteIncome,idRicecrop])
+    axios
+      .get(`/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`)
+      .then((res) => {})
+      .catch((err) => console.log(err));
+  }, [deleteIncome, idRicecrop]);
 
   return (
     <div className="flex">
@@ -268,8 +271,8 @@ const RicecropDetailMonth = (props) => {
             </div>
           </div>
           <div className="flex">
-            <div style={{ width: "50%" }}>
-              <span>รายรับ</span><FaMoneyBillAlt size={30} color="blue" />
+            <div style={{ width: "50%", paddingRight: "10px" }}>
+              <span>รายรับ</span>
               <div>
                 <table className="table table-striped">
                   <thead>
@@ -286,12 +289,21 @@ const RicecropDetailMonth = (props) => {
                       <tr key={uuid()}>
                         <td>{formatDate(income.incomeDate)}</td>
                         <td>{income.incomeDetails}</td>
-                        <td>{(income.amount).toLocaleString()}</td>
+                        <td>{income.amount.toLocaleString()}</td>
                         <td>
-                          <FaPencilAlt style={{ color: "green" }} />
+                          <FaPencilAlt
+                            style={{ color: "green" }}
+                            onClick={() => {
+                              setSelectedIncome(income);
+                              handleOpen();
+                            }}
+                          />
                         </td>
                         <td>
-                          <FiTrash2 style={{ color: "red" }} onClick={()=> onClickDeleteIncome(income.id)}/>
+                          <FiTrash2
+                            style={{ color: "red" }}
+                            onClick={() => onClickDeleteIncome(income.id)}
+                          />
                         </td>
                       </tr>
                     ))}
@@ -299,7 +311,8 @@ const RicecropDetailMonth = (props) => {
                 </table>
               </div>
             </div>
-            <div style={{ width: "50%", paddingLeft: "20px" }}>
+
+            <div style={{ width: "50%", paddingLeft: "10px" }}>
               <span>รายจ่าย</span>
               <div>
                 <table className="table table-striped">
@@ -317,19 +330,26 @@ const RicecropDetailMonth = (props) => {
                       <tr key={uuid()}>
                         <td>{formatDate(expense.date)}</td>
                         <td>{expense.detail}</td>
-                        <td>{(expense.amount).toLocaleString()}</td>
+                        <td>{expense.amount.toLocaleString()}</td>
                         <td>
-                          <Link to={"/kk"}>
-                            <FaPencilAlt style={{ color: "green" }} />
-                          </Link>
+                          <FaPencilAlt style={{ color: "green" }} />
                         </td>
                         <td>
-                          <FiTrash2 style={{ color: "red" }} onClick={()=> onClickDeleteExpense(expense.id)}/>
+                          <FiTrash2
+                            style={{ color: "red" }}
+                            onClick={() => onClickDeleteExpense(expense.id)}
+                          />
                         </td>
                       </tr>
                     ))}
                   </tbody>
                 </table>
+                <IncomeModal
+                  open={open}
+                  handleClose={handleClose}
+                  income={selectedIncome}
+                  selectedMonth={monthInt}
+                />
               </div>
             </div>
           </div>

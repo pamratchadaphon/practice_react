@@ -23,6 +23,8 @@ const RicecropDetail = () => {
   const [mape, setMape] = useState(Array.from({ length: 12 }, () => 0));
   const [startMonth, setStartMonth] = useState(1);
   const [endMonth, setEndMonth] = useState(12);
+  // const [income, setIncome] = useState([])
+  // const [expense, setExpense] = useState([])
   const chartRef = useRef(null);
 
   const data1 = [];
@@ -139,6 +141,7 @@ const RicecropDetail = () => {
             `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
           );
           setData(ricecropResponse.data[0]);
+          // setIncome(ricecropResponse.data[0]?.Income);
 
           const startDate = new Date(ricecropResponse.data[0].startDate);
           const startMonth = startDate.getMonth() + 1;
@@ -147,49 +150,6 @@ const RicecropDetail = () => {
           const endDate = new Date(ricecropResponse.data[0].endDate);
           const endMonth = endDate.getMonth() + 1;
           setEndMonth(endMonth);
-
-          // const monthI =
-          //   ricecropResponse.data[0]?.Income?.map((income) => {
-          //     const incomeDate = new Date(income.incomeDate);
-          //     const month = incomeDate.getMonth() + 1;
-          //     return `${month}`;
-          //   }) || [];
-          //   console.log(monthI);
-
-          // const monthE =
-          //   ricecropResponse.data[0]?.Expense?.map((expense) => {
-          //     const expenseDate = new Date(expense.date);
-          //     const month = expenseDate.getMonth() + 1;
-          //     return `${month}`;
-          //   }) || [];
-          // console.log(monthE);
-
-          // const income = ricecropResponse.data[0]?.Income?.map((income) => income.amount) || [];
-          //   console.log(income);
-          // const expense = ricecropResponse.data[0]?.Expense?.map( (expense) => expense.amount ) || [];
-          //   console.log(expense);
-
-          // for (let i = 0; i < monthE.length; i++) {
-          //   const monthIndex = parseInt(monthE[i]) - 1;
-
-          //   setMape(prevState => {
-          //     const newState = [...prevState];
-          //     newState[monthIndex] += expense[i];
-          //     console.log(newState);
-          //     return newState;
-
-          //   });
-          // }
-
-          // for (let i = 0; i < monthI.length; i++) {
-          //   const monthIndex = parseInt(monthI[i]) - 1;
-
-          //   setMapi(prevState => {
-          //     const newState = [...prevState];
-          //     newState[monthIndex] += income[i];
-          //     return newState;
-          //   });
-          // }
 
           // คำนวณผลรวมของรายรับ
           const totalIncome =
@@ -279,7 +239,7 @@ const RicecropDetail = () => {
         <Sidebar idFarmer={idFarmer} />
       </div>
       <div className="basis-[84%] border">
-        <div className="px-[30px] py-[2px] pt-[40px] text-center font-bold text-lg">
+        <div className="px-[30px] py-[2px] pt-[30px] text-center font-bold text-lg">
           ปีที่ทำการปลูก {data.year}
         </div>
         <div className="px-[30px] py-[2px]">
@@ -327,7 +287,7 @@ const RicecropDetail = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white py-5 shadow-lg rounded-2xl flex">
+          <div className="bg-white py-4 shadow-lg rounded-2xl flex">
             <div className="px-4">
               <span>กราฟแสดงรายรับ-รายจ่ายในแต่ละเดือน</span>
               <BarChart width={830} height={300} data={data1}>
@@ -361,6 +321,46 @@ const RicecropDetail = () => {
               <canvas ref={chartRef} width={200} height={200} />
             </div>
           </div>
+          {/* <div style={{ width: "50%", paddingLeft: "10px" }}>
+              <span>รายจ่าย</span>
+              <div>
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>วันที่</th>
+                      <th>รายการ</th>
+                      <th>ราคา</th>
+                      <th>แก้ไข</th>
+                      <th>ลบ</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {income.map((income) => (
+                      <tr key={income.id}>
+                        <td>{formatDate(income.incomeDate)}</td>
+                        <td>{income.incomeDetails}</td>
+                        <td>{income.amount.toLocaleString()}</td>
+                        <td>
+                          <FaPencilAlt style={{ color: "green" }} />
+                        </td>
+                        <td>
+                          <FiTrash2
+                            style={{ color: "red" }}
+                            onClick={() => onClickDeleteExpense(expense.id)}
+                          />
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+                <IncomeModal
+                  open={open}
+                  handleClose={handleClose}
+                  income={selectedIncome}
+                  selectedMonth={monthInt}
+                />
+              </div>
+            </div> */}
         </div>
       </div>
     </div>
