@@ -5,11 +5,11 @@ import Modal from "@mui/material/Modal";
 import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
 
-const IncomeModal = ({ open, handleClose, income, selectedMonth }) => {
-    console.log(selectedMonth);
+const IncomeModal = ({ open, handleClose, income, sendDataToParent }) => {
+
     const [value, setValue] = useState({
+        id: income.id,
         incomeDate: income.incomeDate , 
         incomeDetails: income.incomeDetails || "",
         amount: income.amount || 0, 
@@ -17,6 +17,7 @@ const IncomeModal = ({ open, handleClose, income, selectedMonth }) => {
 
     useEffect(() => {
         setValue({
+            id: income.id,
             incomeDate: income.incomeDate,
             incomeDetails: income.incomeDetails || "",
             amount: income.amount || 0,
@@ -43,19 +44,13 @@ const IncomeModal = ({ open, handleClose, income, selectedMonth }) => {
         return `${year}-${month}-${day}`;
     };
 
-    const navigator = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
             await axios.put(`/api/income/editIncome/${income.id}`, value);
             handleClose();
-            const date = new Date(income.incomeDate);
-            const month = date.getMonth()+1
-            // setSelectedMonth(month)
-            console.log(income.ricecropID);
-            console.log(month);
-            
+            sendDataToParent(value);   
         } catch (error) {
             console.error('Error updating income data:', error);
         }
@@ -99,7 +94,7 @@ const IncomeModal = ({ open, handleClose, income, selectedMonth }) => {
                         fullWidth
                         margin="normal"
                     />
-                    <Button type="submit" variant="contained" color="primary" fullWidth>
+                    <Button type="submit" variant="contained" color="primary" fullWidth onClick={sendDataToParent}>
                         บันทึก
                     </Button>
                 </form>

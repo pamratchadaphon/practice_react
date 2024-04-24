@@ -6,10 +6,12 @@ import { v4 as uuid } from "uuid";
 import { FaPencilAlt } from "react-icons/fa";
 import { FiTrash2 } from "react-icons/fi";
 import IncomeModal from "../components/IncomeModal";
+import {message} from 'antd';
 
-const RicecropDetailMonth = (props) => {
+const RicecropDetailMonth = () => {
   const { idFarmer, idRicecrop } = useParams();
   const idAsInt = Number(idFarmer);
+
   const [data, setData] = useState({});
   const [selectedMonth, setSelectedMonth] = useState("");
   const [totalIncome, setTotalIncome] = useState(0);
@@ -18,17 +20,18 @@ const RicecropDetailMonth = (props) => {
   const [monthInt, setMonthInt] = useState(0);
   const [incomeMonth, setIncomeMonth] = useState([]);
   const [expenseMonth, setExpenseMonth] = useState([]);
-  const [deleteIncome, setDeleteIncome] = useState(true);
-  const [deleteExpense, setDeleteExpense] = useState(true);
+
   const [open, setOpen] = useState(false);
   const [selectedIncome, setSelectedIncome] = useState({});
+  const [dataFromChild, setDataFromChild] = useState({});
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-  const handleMonthChange = (event) => {
-    setSelectedMonth(event.target.value);
-  };
-  useEffect(() => {}, [selectedIncome]);
+  const [deleteIncome, setDeleteIncome] = useState(true);
+  const [deleteExpense, setDeleteExpense] = useState(true);
+
+  const [messageApi, contextHolder] = message.useMessage();
+
+  console.log(dataFromChild);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -54,6 +57,40 @@ const RicecropDetailMonth = (props) => {
             `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
           );
           setData(ricecropResponse.data[0]);
+
+          const currentDate = new Date();
+          const currentMonthIndex = currentDate.getMonth();
+          const m = month[currentMonthIndex];
+          setSelectedMonth(m);
+          console.log(m);
+
+          const monthE = (data?.Expense || []).filter((expense) => {
+            const expenseDate = new Date(expense.date);
+            const month = expenseDate.getMonth() + 1;
+            return month === monthInt;
+          });
+
+          setExpenseMonth(monthE);
+
+          const totalExpense =
+            monthE.reduce((accumulator, currentValue) => {
+              return accumulator + parseInt(currentValue.amount);
+            }, 0) || 0;
+          setTotalExpense(totalExpense);
+
+          const monthI = (data?.Income || []).filter((income) => {
+            const incomeDate = new Date(income.incomeDate);
+            const month = incomeDate.getMonth() + 1;
+            return month === monthInt;
+          });
+
+          setIncomeMonth(monthI);
+
+          const totalIncome =
+            monthI.reduce((accumulator, currentValue) => {
+              return accumulator + parseInt(currentValue.amount);
+            }, 0) || 0;
+          setTotalIncome(totalIncome);
 
           const startDate = new Date(ricecropResponse.data[0].startDate);
           const startMonth = startDate.getMonth() + 1;
@@ -117,6 +154,48 @@ const RicecropDetailMonth = (props) => {
     fetchData();
   }, [idFarmer, idRicecrop]);
 
+  const handleMonthChange = (event) => {
+    setSelectedMonth(event.target.value);
+  };
+
+  const handleOpen = () => setOpen(true);
+
+  const handleClose = () => setOpen(false);
+  const success = () => {
+    messageApi.open({
+      type: 'success',
+      content: 'This is a success message',
+    });
+  };
+  async function handleDataFromChild(dataForm) {
+    setDataFromChild(dataForm);
+
+    try {
+      const ricecropResponse = await axios.get(
+        `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
+      );
+      const data = ricecropResponse.data[0];
+      const monthI = (data.Income || []).filter((income) => {
+        const incomeDate = new Date(income.incomeDate);
+        const month = incomeDate.getMonth() + 1;
+        return month === 4;
+      });
+      setIncomeMonth(monthI);
+
+      const totalIncome =
+        monthI.reduce((accumulator, currentValue) => {
+          return accumulator + parseInt(currentValue.amount);
+        }, 0) || 0;
+      setTotalIncome(totalIncome);
+
+      success()
+    } catch (error) {
+      console.error("Error fetching ricecrop data:", error);
+    }
+  }
+
+  useEffect(() => {}, [selectedIncome]);
+
   useEffect(() => {
     if (selectedMonth === "มกราคม") {
       setMonthInt(1);
@@ -145,7 +224,7 @@ const RicecropDetailMonth = (props) => {
     } else {
       setMonthInt(0);
     }
-  }, [selectedMonth]);
+  }, [selectedMonth, monthInt]);
 
   useEffect(() => {
     const monthE = (data?.Expense || []).filter((expense) => {
@@ -219,6 +298,30 @@ const RicecropDetailMonth = (props) => {
       .catch((err) => console.log(err));
   }, [deleteIncome, idRicecrop]);
 
+  const renderIncomeRows = () => {
+    return incomeMonth.map((income) => (
+      <tr key={uuid()}>
+        <td>{formatDate(income.incomeDate)}</td>
+        <td>{income.incomeDetails}</td>
+        <td>{income.amount.toLocaleString()}</td>
+        <td>
+          <FaPencilAlt
+            style={{ color: "green" }}
+            onClick={() => {
+              setSelectedIncome(income);
+              handleOpen();
+            }}
+          />
+        </td>
+        <td>
+          <FiTrash2
+            style={{ color: "red" }}
+            onClick={() => onClickDeleteIncome(income.id)}
+          />
+        </td>
+      </tr>
+    ));
+  };
   return (
     <div className="flex">
       <div className="basis-[16%] h-[100vh]">
@@ -234,7 +337,7 @@ const RicecropDetailMonth = (props) => {
                 onChange={handleMonthChange}
                 className="block w-full mt-1 border-black focus:border-indigo-300 focus:ring focus:ring-indigo-200 rounded-md shadow-sm"
               >
-                <option value="">-- เลือกเดือน --</option>
+                <option value="">เลือกเดือน</option>
                 {month.map((month, index) => (
                   <option key={index} value={month}>
                     {month}
@@ -284,30 +387,7 @@ const RicecropDetailMonth = (props) => {
                       <th>ลบ</th>
                     </tr>
                   </thead>
-                  <tbody>
-                    {incomeMonth.map((income) => (
-                      <tr key={uuid()}>
-                        <td>{formatDate(income.incomeDate)}</td>
-                        <td>{income.incomeDetails}</td>
-                        <td>{income.amount.toLocaleString()}</td>
-                        <td>
-                          <FaPencilAlt
-                            style={{ color: "green" }}
-                            onClick={() => {
-                              setSelectedIncome(income);
-                              handleOpen();
-                            }}
-                          />
-                        </td>
-                        <td>
-                          <FiTrash2
-                            style={{ color: "red" }}
-                            onClick={() => onClickDeleteIncome(income.id)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
+                  <tbody>{renderIncomeRows()}</tbody>
                 </table>
               </div>
             </div>
@@ -348,7 +428,7 @@ const RicecropDetailMonth = (props) => {
                   open={open}
                   handleClose={handleClose}
                   income={selectedIncome}
-                  selectedMonth={monthInt}
+                  sendDataToParent={handleDataFromChild}
                 />
               </div>
             </div>
