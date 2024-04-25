@@ -9,16 +9,16 @@ import IncomeModal from "../components/IncomeModal";
 import ExpenseModal from "../components/ExpenseModal";
 
 const RicecropDetailMonth = () => {
-  
-  const { idFarmer, idRicecrop } = useParams();
+  const { idFarmer, idRicecrop } = useParams(); 
   const idAsInt = Number(idFarmer);
 
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [totalIncome, setTotalIncome] = useState(0);
+  const [selectedMonth, setSelectedMonth] = useState(""); //เลือกเดือน
+  const [totalIncome, setTotalIncome] = useState(0); 
   const [totalExpense, setTotalExpense] = useState(0);
-  const [month, setMonth] = useState([]);
-  const [monthInt, setMonthInt] = useState(0);
-  const [incomeMonth, setIncomeMonth] = useState([]);
+
+  const [month, setMonth] = useState([]); // เดือนใน dropdown
+  const [monthInt, setMonthInt] = useState(0); //เดือนที่เลือกแปลงเป็นตัวเลข
+  const [incomeMonth, setIncomeMonth] = useState([]); //รายรับทั้งหมดของเดือนที่เลือก
   const [expenseMonth, setExpenseMonth] = useState([]);
 
   const [openIncome, setOpenIncome] = useState(false);
@@ -140,7 +140,6 @@ const RicecropDetailMonth = () => {
   const handleCloseExpense = () => setOpenExpense(false);
 
   async function handleDataFromChildIncome(dataForm) {
-
     try {
       const ricecropResponse = await axios.get(
         `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
@@ -167,7 +166,6 @@ const RicecropDetailMonth = () => {
   }
 
   async function handleDataFromChildExpense(dataForm) {
-
     try {
       const ricecropResponse = await axios.get(
         `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
@@ -258,14 +256,13 @@ const RicecropDetailMonth = () => {
     }-${year}`;
   };
 
-
-  async function onClickDeleteIncome(idIncome,incomeDate) {
+  async function onClickDeleteIncome(idIncome, incomeDate) {
     axios
       .delete(`/api/income/deleteIncome/${idIncome}`)
       .then((res) => {
-        const date = new Date(incomeDate)
-        const month = date.getMonth()+1
-        showDataDeleteIncome(month)
+        const date = new Date(incomeDate);
+        const month = date.getMonth() + 1;
+        showDataDeleteIncome(month);
       })
       .catch((err) => console.log(err));
   }
@@ -293,13 +290,13 @@ const RicecropDetailMonth = () => {
     }
   }
 
-  async function onClickDeleteExpense(idExpense,expenseDate) {
+  async function onClickDeleteExpense(idExpense, expenseDate) {
     axios
       .delete(`/api/expense/deleteExpense/${idExpense}`)
       .then((res) => {
-        const date = new Date(expenseDate)
-        const month = date.getMonth()+1
-        showDataDeleteExpense(month)
+        const date = new Date(expenseDate);
+        const month = date.getMonth() + 1;
+        showDataDeleteExpense(month);
       })
       .catch((err) => console.log(err));
   }
@@ -357,7 +354,9 @@ const RicecropDetailMonth = () => {
               <td>
                 <FiTrash2
                   style={{ color: "red", cursor: "pointer" }}
-                  onClick={() => onClickDeleteIncome(income.id,income.incomeDate)}
+                  onClick={() =>
+                    onClickDeleteIncome(income.id, income.incomeDate)
+                  }
                 />
               </td>
             </tr>
@@ -396,8 +395,8 @@ const RicecropDetailMonth = () => {
               </td>
               <td>
                 <FiTrash2
-                  style={{ color: "red",cursor:"pointer" }}
-                  onClick={() => onClickDeleteExpense(expense.id,expense.date)}
+                  style={{ color: "red", cursor: "pointer" }}
+                  onClick={() => onClickDeleteExpense(expense.id, expense.date)}
                 />
               </td>
             </tr>
