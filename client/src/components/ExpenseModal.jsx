@@ -6,24 +6,24 @@ import axios from "axios";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 
-const IncomeModal = ({ open, handleClose, income, sendDataToParentIncome }) => {
+const ExpenseModal = ({ open, handleClose, expense, sendDataToParentExpense }) => {
 
 
     const [value, setValue] = useState({
-        id: income.id,
-        incomeDate: income.incomeDate , 
-        incomeDetails: income.incomeDetails || "",
-        amount: income.amount || 0, 
+        id: expense.id,
+        date: expense.date , 
+        detail: expense.detail || "",
+        amount: expense.amount || 0, 
     });
 
     useEffect(() => {
         setValue({
-            id: income.id,
-            incomeDate: income.incomeDate,
-            incomeDetails: income.incomeDetails || "",
-            amount: income.amount || 0,
+            id: expense.id,
+            date: expense.date,
+            detail: expense.detail || "",
+            amount: expense.amount || 0,
         });
-    }, [income]);
+    }, [expense]);
 
     const style = {
         position: "absolute",
@@ -49,11 +49,11 @@ const IncomeModal = ({ open, handleClose, income, sendDataToParentIncome }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`/api/income/editIncome/${income.id}`, value);
+            await axios.put(`/api/expense/editExpense/${expense.id}`, value);
             handleClose();
-            sendDataToParentIncome(value);   
+            sendDataToParentExpense(value);   
         } catch (error) {
-            console.error('Error updating income data:', error);
+            console.error('Error updating expense data:', error);
         }
     };
 
@@ -66,14 +66,14 @@ const IncomeModal = ({ open, handleClose, income, sendDataToParentIncome }) => {
             <Box sx={style}>
                 <form onSubmit={handleSubmit}>
                     <Typography variant="h6" component="h2" align="center" gutterBottom>
-                        แก้ไขรายรับ
+                        แก้ไขรายจ่าย
                     </Typography>
                     <TextField
                         id="date"
                         label="วันที่"
                         type="date"
-                        value={formatDate(value.incomeDate)}
-                        onChange={(e) => setValue({ ...value, incomeDate: e.target.value })}
+                        value={formatDate(value.date)}
+                        onChange={(e) => setValue({ ...value, date: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
@@ -81,8 +81,8 @@ const IncomeModal = ({ open, handleClose, income, sendDataToParentIncome }) => {
                         id="item"
                         label="รายการ"
                         type="text"
-                        value={value.incomeDetails}
-                        onChange={(e) => setValue({ ...value, incomeDetails: e.target.value })}
+                        value={value.detail}
+                        onChange={(e) => setValue({ ...value, detail: e.target.value })}
                         fullWidth
                         margin="normal"
                     />
@@ -95,7 +95,7 @@ const IncomeModal = ({ open, handleClose, income, sendDataToParentIncome }) => {
                         fullWidth
                         margin="normal"
                     />
-                    <Button type="submit" variant="contained" color="primary" fullWidth onClick={sendDataToParentIncome}>
+                    <Button type="submit" variant="contained" color="primary" fullWidth onClick={sendDataToParentExpense}>
                         บันทึก
                     </Button>
                 </form>
@@ -104,4 +104,4 @@ const IncomeModal = ({ open, handleClose, income, sendDataToParentIncome }) => {
     );
 };
 
-export default IncomeModal;
+export default ExpenseModal;
