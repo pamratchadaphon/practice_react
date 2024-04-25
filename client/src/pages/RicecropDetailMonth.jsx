@@ -27,11 +27,6 @@ const RicecropDetailMonth = () => {
   const [selectedIncome, setSelectedIncome] = useState({});
   const [selectedExpense, setSelectedExpense] = useState({});
 
-
-
-  const [deleteIncome, setDeleteIncome] = useState(true);
-  const [deleteExpense, setDeleteExpense] = useState(true);
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -263,55 +258,74 @@ const RicecropDetailMonth = () => {
     }-${year}`;
   };
 
-  function showDataDelete() {
-    const ricecropResponse = axios.get(
-      `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
-    );
-    // const monthI = (data.Income || []).filter((income) => {
-    //   const incomeDate = new Date(income.incomeDate);
-    //   const month = incomeDate.getMonth() + 1;
-    //   return month === monthInt;
-    // });
-    // setIncomeMonth(monthI);
 
-    // const totalIncome =
-    //   monthI.reduce((accumulator, currentValue) => {
-    //     return accumulator + parseInt(currentValue.amount);
-    //   }, 0) || 0;
-    // setTotalIncome(totalIncome);
-  }
-
-  async function onClickDeleteIncome(idIncome) {
+  async function onClickDeleteIncome(idIncome,incomeDate) {
     axios
       .delete(`/api/income/deleteIncome/${idIncome}`)
       .then((res) => {
-        setDeleteIncome(true);
-        showDataDelete();
+        const date = new Date(incomeDate)
+        const month = date.getMonth()+1
+        showDataDeleteIncome(month)
       })
       .catch((err) => console.log(err));
-    //showDataDelete()
+  }
+  async function showDataDeleteIncome(monthInt) {
+    try {
+      const ricecropResponse = await axios.get(
+        `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
+      );
+      const data = ricecropResponse.data[0];
+
+      const monthI = (data.Income || []).filter((income) => {
+        const incomeDate = new Date(income.incomeDate);
+        const month = incomeDate.getMonth() + 1;
+        return month === monthInt;
+      });
+      setIncomeMonth(monthI);
+
+      const totalIncome =
+        monthI.reduce((accumulator, currentValue) => {
+          return accumulator + parseInt(currentValue.amount);
+        }, 0) || 0;
+      setTotalIncome(totalIncome);
+    } catch (error) {
+      console.error("Error fetching ricecrop data:", error);
+    }
   }
 
-  function onClickDeleteExpense(idExpense) {
-    alert(`ยืนยันการลบรายรับรายการที่ ${idExpense}`);
+  async function onClickDeleteExpense(idExpense,expenseDate) {
     axios
       .delete(`/api/expense/deleteExpense/${idExpense}`)
       .then((res) => {
-        setDeleteExpense(true);
-        // window.location.reload();
+        const date = new Date(expenseDate)
+        const month = date.getMonth()+1
+        showDataDeleteExpense(month)
       })
       .catch((err) => console.log(err));
   }
+  async function showDataDeleteExpense(monthInt) {
+    try {
+      const ricecropResponse = await axios.get(
+        `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
+      );
+      const data = ricecropResponse.data[0];
 
-  useEffect(() => {
-    if (deleteIncome) {
-      setDeleteIncome(false);
+      const monthE = (data.Expense || []).filter((expense) => {
+        const date = new Date(expense.date);
+        const month = date.getMonth() + 1;
+        return month === monthInt;
+      });
+      setExpenseMonth(monthE);
+
+      const totalExpense =
+        monthE.reduce((accumulator, currentValue) => {
+          return accumulator + parseInt(currentValue.amount);
+        }, 0) || 0;
+      setTotalExpense(totalExpense);
+    } catch (error) {
+      console.error("Error fetching ricecrop data:", error);
     }
-    axios
-      .get(`/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`)
-      .then((res) => {})
-      .catch((err) => console.log(err));
-  }, [deleteIncome, idRicecrop]);
+  }
 
   function rowIncomeTable() {
     return (
@@ -343,7 +357,7 @@ const RicecropDetailMonth = () => {
               <td>
                 <FiTrash2
                   style={{ color: "red", cursor: "pointer" }}
-                  onClick={() => onClickDeleteIncome(income.id)}
+                  onClick={() => onClickDeleteIncome(income.id,income.incomeDate)}
                 />
               </td>
             </tr>
@@ -382,8 +396,8 @@ const RicecropDetailMonth = () => {
               </td>
               <td>
                 <FiTrash2
-                  style={{ color: "red" }}
-                  onClick={() => onClickDeleteExpense(expense.id)}
+                  style={{ color: "red",cursor:"pointer" }}
+                  onClick={() => onClickDeleteExpense(expense.id,expense.date)}
                 />
               </td>
             </tr>
