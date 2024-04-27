@@ -97,7 +97,7 @@ const Ricecrop = () => {
               style={{ float: "right" }}
               to={`/CreateRicecrop/${id}`}
             >
-              เพิ่มข้อมูล
+              สร้างรอบการปลูกข้าว
             </Link>
             <table className="table table-striped">
               <thead>

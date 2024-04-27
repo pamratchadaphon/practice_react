@@ -12,8 +12,10 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from 'react-router-dom';
 
 function SignIn() {
+  const navigate = useNavigate();
     const handleSubmit = async (event) => {
         event.preventDefault();
         const formData = new FormData(event.currentTarget);
@@ -21,7 +23,10 @@ function SignIn() {
           email: formData.get('email'),
           password: formData.get('password')
         };
-      
+        
+        if (jsonData.email === "admin" && jsonData.password === "password") {
+          navigate('/manageVariety')
+        }
         try {
           const response = await fetch("http://localhost:8080/api/farmer/login", {
             method: "POST",

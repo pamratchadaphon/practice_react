@@ -14,6 +14,13 @@ import Register from './pages/Register'
 import Income from './pages/Income.jsx'
 import Expense from './pages/Expense.jsx'
 import RicecropDetailMonth from './pages/RicecropDetailMonth.jsx';
+import Variety from './pages/Variety.jsx';
+import VarietyDetail from './pages/VarietyDetail.jsx';
+import Disease from './pages/Disease.jsx';
+import DiseaseDetail from './pages/DiseaseDetail.jsx';
+import ManageVariety from './pages/admin/ManageVariety.jsx';
+import AddVariety from './pages/admin/AddVariety.jsx';
+
 
 const App = () => {
   return (
@@ -31,6 +38,12 @@ const App = () => {
         <Route path='/Expense/:idFarmer/:idRicecrop' element={<Expense/>}/>
         <Route path='/' element={<Login/>}/>
         <Route path='/RicecropDetailMonth/:idFarmer/:idRicecrop' element={<RicecropDetailMonth/>}/>
+        <Route path='/variety/:idFarmer' element={<Variety/>}/>
+        <Route path='/varietyDetail/:idFarmer/:idVariety' element={<VarietyDetail/>}/>
+        <Route path='/disease/:idFarmer' element={<Disease/>}/>
+        <Route path='/diseaseDetail/:idFarmer/:idDisease' element={<DiseaseDetail/>}/>
+        <Route path='/manageVariety' element={<ManageVariety/>}/>
+        <Route path='/addVariety' element={<AddVariety/>}/>
       </Routes>
     </BrowserRouter>
   )

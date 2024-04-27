@@ -10,10 +10,10 @@ const Sidebar = (props) => {
     window.location = '/';
   };
   return (
-    <div className='bg-[#15803d] h-screen px-[25px]'>
+    <div className='bg-[#15803d] h-[100vh] px-[25px]'>
       <div className='px-[15px] py-[30px] flex items-center justify-center'>
         <LiaUserCircle color='white'/>
-        <h1 className='text-white text-[20px] leading-[24px] font-extrabold cursor-pointer'>
+        <h1 className='text-white text-[20px] leading-[24px] font-extrabold '>
           {fname} {lname}
         </h1>
       </div>
@@ -26,26 +26,19 @@ const Sidebar = (props) => {
           <span>รอบการปลูกข้าว</span>
           </Link>
         </div>
-        {/* เพิ่มลิงค์และข้อมูลเกี่ยวกับบันทึกรายรับ-รายจ่าย */}
-        {/* <div className='flex items-center gap-[15px] py-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
-          <a href="/expenses" className="flex items-center gap-2 text-white text-[14px] leading-[20px] font-bold hover:underline" style={{ textDecoration: 'none' }}>
-            <FaBook  color='white' />
-            <span>บันทึกรายรับ-รายจ่าย</span>
-          </a>
-        </div> */}
         {/* เพิ่มลิงค์และข้อมูลเกี่ยวกับพันธุ์ข้าว */}
         <div className='flex items-center gap-[15px] py-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
-          <a href="/rice-varieties" className="flex items-center gap-2 text-white text-[14px] leading-[20px] font-bold hover:underline" style={{ textDecoration: 'none' }}>
+          <Link to={`/variety/${idFarmer}`} className="flex items-center gap-2 text-white text-[14px] leading-[20px] font-bold hover:underline" style={{ textDecoration: 'none' }}>
             <FaSeedling color='white' />
             <span>พันธุ์ข้าว</span>
-          </a>
+          </Link>
         </div>
         {/* เพิ่มลิงค์และข้อมูลเกี่ยวกับโรคข้าว */}
         <div className='flex items-center gap-[15px] py-[15px] border-b-[1px] border-[#EDEDED]/[0.3]'>
-          <a href="/rice-diseases" className="flex items-center gap-2 text-white text-[14px] leading-[20px] font-bold hover:underline" style={{ textDecoration: 'none' }}>
+          <Link to={`/disease/${idFarmer}`} className="flex items-center gap-2 text-white text-[14px] leading-[20px] font-bold hover:underline" style={{ textDecoration: 'none' }}>
             <FaLeaf color='white' />
             <span>โรคข้าวและการป้องกันกำจัด</span>
-          </a>
+          </Link>
         </div>
       </div>
       {/* ปุ่ม Logout */}

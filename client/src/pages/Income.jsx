@@ -2,18 +2,18 @@ import React, { useState, useEffect } from "react";
 import Sidebar from "../components/Sidebar";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
-import { TextField, Button} from "@mui/material";
+import { TextField, Button } from "@mui/material";
 
 const CreateRicecrop = () => {
   const { idFarmer, idRicecrop } = useParams();
   const [values, setValues] = useState({
-    incomeDate: new Date().toISOString().split('T')[0],
+    incomeDate: new Date().toISOString().split("T")[0],
     incomeDetails: "",
     amount: "",
     farmerID: idFarmer,
     ricecropID: idRicecrop,
   });
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -22,34 +22,36 @@ const CreateRicecrop = () => {
       .then((res) => {
         const date = new Date(res.data.incomeDate);
         const month = date.getMonth() + 1;
-        console.log(month); 
+        console.log(month);
         // console.log(res.data.createdAt);
         // const createdAtDate = new Date(res.data.incomeDate);
         // const month = createdAtDate.getMonth() + 1;
         // const monthValue = month;
         // , { state: { monthValue ,amount: res.data.amount} }
-        navigate(`/RicecropDetailMonth/${idFarmer}/${idRicecrop}`, { state: { month : {month}} });
+        navigate(`/RicecropDetail/${idFarmer}/${idRicecrop}`, {
+          state: { month: { month } },
+        });
       })
       .catch((err) => console.log(err));
     alert("บันทึกรายรับเสร็จสิ้น");
-  }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('token');
-        
+        const token = localStorage.getItem("token");
+
         if (!token) {
-          window.location.href = '/';
+          window.location.href = "/";
           return;
         }
-  
+
         const config = {
           headers: {
-            'Authorization': `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         };
-        axios.post('http://localhost:8080/api/farmer/authen', null, config);
+        axios.post("http://localhost:8080/api/farmer/authen", null, config);
       } catch (error) {
         console.error("Error fetching ricecrop data:", error);
       }
@@ -72,48 +74,64 @@ const CreateRicecrop = () => {
             </div>
 
             <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-            <form onSubmit={handleSubmit} sx={{ mt: 3 }}>
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="incomeDate"
-            label="วันที่"
-            type="date"
-            InputLabelProps={{ shrink: true }} // Adjust label behavior
-            value={values.incomeDate}
-            onChange={(e) =>
-              setValues((prevState) => ({ ...prevState, incomeDate: e.target.value }))
-            }
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="incomeDetails"
-            label="รายการ"
-            type="text"
-            InputLabelProps={{ shrink: true }}
-            value={values.incomeDetails}
-            onChange={(e) =>
-              setValues((prevState) => ({ ...prevState, incomeDetails: e.target.value }))
-            }
-          />
-          <TextField
-            margin="normal"
-            required
-            fullWidth
-            id="amount"
-            label="ราคา"
-            type="number"
-            InputLabelProps={{ shrink: true }}
-            value={values.amount}
-            onChange={(e) => setValues((prevState) => ({ ...prevState, amount: e.target.value }))}
-          />
-          <Button type="submit" variant="contained" fullWidth sx={{ mt: 3 }}>
-            เพิ่ม
-          </Button>
-        </form>
+              <form onSubmit={handleSubmit} sx={{ mt: 3 }}>
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="incomeDate"
+                  label="วันที่"
+                  type="date"
+                  InputLabelProps={{ shrink: true }} // Adjust label behavior
+                  value={values.incomeDate}
+                  onChange={(e) =>
+                    setValues((prevState) => ({
+                      ...prevState,
+                      incomeDate: e.target.value,
+                    }))
+                  }
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="incomeDetails"
+                  label="รายการ"
+                  type="text"
+                  InputLabelProps={{ shrink: true }}
+                  value={values.incomeDetails}
+                  onChange={(e) =>
+                    setValues((prevState) => ({
+                      ...prevState,
+                      incomeDetails: e.target.value,
+                    }))
+                  }
+                />
+                <TextField
+                  margin="normal"
+                  required
+                  fullWidth
+                  id="amount"
+                  label="ราคา"
+                  type="number"
+                  InputLabelProps={{ shrink: true }}
+                  value={values.amount}
+                  onChange={(e) =>
+                    setValues((prevState) => ({
+                      ...prevState,
+                      amount: e.target.value,
+                    }))
+                  }
+                />
+                <Button
+                  type="submit"
+                  variant="contained"
+                  fullWidth
+                  sx={{ mt: 3 }}
+                >
+                  เพิ่ม
+                </Button>
+              </form>
             </div>
           </div>
         </div>
