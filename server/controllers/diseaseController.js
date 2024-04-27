@@ -13,17 +13,17 @@ module.exports = {
     },
 
     async getOneDisease (req,res) {
-        const disease = await Disease.findOne({ where: { diseaseID: req.params.diseaseID } })
+        const disease = await Disease.findOne({ where: { id: req.params.id } })
         res.status(200).send(disease)
     },
 
     async editDisease (req,res) {
-        await Disease.update(req.body, { where: { diseaseID: req.params.diseaseID } })
+        await Disease.update(req.body, { where: { id: req.params.id } })
         res.status(200).send(req.body)
     },
 
     async deleteDisease (req,res) {
-        await Disease.destroy({ where: { diseaseID : req.params.diseaseID } })
+        await Disease.destroy({ where: { id : req.params.id } })
         res.status(200).send("disease is deleted!")
     }
 }
