@@ -51,9 +51,7 @@ const VarietyDetail = () => {
         <div className="px-10 py-2 pt-16 mt-3">
           <div className="text-center text-2xl">{data.name}</div>
           <div className="text-center mt-4 mb-4">
-            <div className="flex justify-center items-center">
-              <img src={data.img} alt="" width={"300px"} />
-            </div>
+            
           </div>
 
 

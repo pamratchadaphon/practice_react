@@ -12,7 +12,7 @@ const RicecropDetailMonth = () => {
   const { idFarmer, idRicecrop } = useParams();
   const idAsInt = Number(idFarmer);
 
-  const [data, setData] = useState({})
+  const [data, setData] = useState({});
 
   const [selectedMonth, setSelectedMonth] = useState(""); //เลือกเดือน
   const [totalIncome, setTotalIncome] = useState(0);
@@ -30,7 +30,18 @@ const RicecropDetailMonth = () => {
   const [selectedExpense, setSelectedExpense] = useState({});
 
 
-
+  const dataTable = (data) => {
+    
+    console.log(data.Income);
+    setIncomeMonth(data.Income)
+    setExpenseMonth(data.Expense)
+    
+  }
+  // useEffect(()=>{
+  //   console.log(data);
+  //   setIncomeMonth(data.Income)
+  //   setExpenseMonth(data.Expense)
+  // })
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -56,45 +67,12 @@ const RicecropDetailMonth = () => {
             `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
           );
 
-          // const currentDate = new Date();
-          // const currentMonthIndex = currentDate.getMonth();
-          // const m = month[currentMonthIndex];
-          // setSelectedMonth(m);
-          // console.log(month[currentMonthIndex]);
-          setData(ricecropResponse.data[0])
-
-          const income = ricecropResponse.data[0].Income
-          setIncomeMonth(income)
-          const expense = ricecropResponse.data[0].Expense
-          setExpenseMonth(expense)
-          // const data = ricecropResponse.data[0];
-          // const monthE = (data?.Expense || []).filter((expense) => {
-          //   const expenseDate = new Date(expense.date);
-          //   const month = expenseDate.getMonth() + 1;
-          //   return month === monthInt;
-          // });
-
-          // setExpenseMonth(monthE);
-
-          // const totalExpense =
-          //   monthE.reduce((accumulator, currentValue) => {
-          //     return accumulator + parseInt(currentValue.amount);
-          //   }, 0) || 0;
-          // setTotalExpense(totalExpense);
-
-          // const monthI = (data?.Income || []).filter((income) => {
-          //   const incomeDate = new Date(income.incomeDate);
-          //   const month = incomeDate.getMonth() + 1;
-          //   return month === monthInt;
-          // });
-
-          // setIncomeMonth(monthI);
-
-          // const totalIncome =
-          //   monthI.reduce((accumulator, currentValue) => {
-          //     return accumulator + parseInt(currentValue.amount);
-          //   }, 0) || 0;
-          // setTotalIncome(totalIncome);
+          setData(ricecropResponse.data[0]);
+          dataTable(ricecropResponse.data[0])
+          // const income = ricecropResponse.data[0].Income
+          // setIncomeMonth(income)
+          // const expense = ricecropResponse.data[0].Expense
+          // setExpenseMonth(expense)
 
           const startDate = new Date(ricecropResponse.data[0].startDate);
           const startMonth = startDate.getMonth() + 1;

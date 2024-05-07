@@ -1,17 +1,38 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useParams } from "react-router-dom";
-import { v4 as uuid } from "uuid";
-import Sidebar from "../components/Sidebar";
-import UserContext from "../UserContext";
+import Navbar from "../components/Navbar";
+import AddIncome from "../components/AddIncome";
+import AddExpense from "../components/AddExpense";
+import AddRicecrop from "../components/AddRicecrop";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import { Button } from "@mui/material";
+import Paper from "@mui/material/Paper";
+import Table from "@mui/material/Table";
+import TableBody from "@mui/material/TableBody";
+import TableCell from "@mui/material/TableCell";
+import TableContainer from "@mui/material/TableContainer";
+import TableHead from "@mui/material/TableHead";
+import TablePagination from "@mui/material/TablePagination";
+import TableRow from "@mui/material/TableRow";
+import InputLabel from "@mui/material/InputLabel";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
 
 const Ricecrop = () => {
-  const [data, setData] = useState([]);
-  const [databyID, setDatabyID] = useState([]);
+  const [ricecrop, setRicecrop] = useState([]);
   const { id } = useParams();
   const idAsInt = Number(id);
-  const [farmer, setFarmer] = useState([]);
-  const [farmerbyID, setFarmerbyID] = useState({});
+  const [fname, setFirstName] = useState("");
+  const [lname, setLastName] = useState("");
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [years, setYears] = useState("");
+
+  const handleChange = (event) => {
+    setYears(event.target.value);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,16 +56,14 @@ const Ricecrop = () => {
           config
         );
         if (authResponse.data.status === "ok") {
-          const ricecropResponse = await axios.get(
-            "/api/ricecrop/getAllRicecrop",
+          const res = await axios.get(
+            `/api/farmer/getFarmerRicecrop/${idAsInt}`,
             config
           );
-          setData(ricecropResponse.data);
-          const farmerResponse = await axios.get(
-            "/api/farmer/getFarmers",
-            config
-          );
-          setFarmer(farmerResponse.data);
+
+          setFirstName(res.data[0].fname);
+          setLastName(res.data[0].lname);
+          setRicecrop(res.data[0].RiceCrop);
         } else {
           alert("Authentication failed");
           localStorage.removeItem("token");
@@ -58,108 +77,140 @@ const Ricecrop = () => {
     };
 
     fetchData();
-  }, []);
+  }, [idAsInt,years]);
 
   useEffect(() => {
-    const filteredData = data.filter((farmer) => farmer.farmerID === idAsInt);
-    setDatabyID(filteredData);
-    const nameFarmer = farmer.filter((farmer) => farmer.id === idAsInt);
-    setFarmerbyID(nameFarmer);
-  }, [data, idAsInt, farmer]);
+    // const fillerYear =ricecrop.filter((f)=> f.year.includes(years))
+    // console.log(fillerYear);
+  }, [years, ricecrop]);
 
-  // ฟังก์ชันสำหรับการแปลงวันที่ให้เป็นรูปแบบ "dd-mm-yyyy"
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
     const month = date.getMonth() + 1;
-    const year = date.getFullYear() + 543;
+    const year = date.getFullYear();
     return `${day < 10 ? "0" + day : day}/${
       month < 10 ? "0" + month : month
     }/${year}`;
   };
 
+  const handleChangePage = (event, newPage) => {
+    setPage(newPage);
+  };
+
+  const handleChangeRowsPerPage = (event) => {
+    setRowsPerPage(+event.target.value);
+    setPage(0);
+  };
+
   return (
-    <UserContext.Provider
-      value={{ fname: farmerbyID[0]?.fname, lname: farmerbyID[0]?.lname }}
-    >
-      <div className="flex">
-        <div className="basis-[16%] h-[100vh]">
+    <div>
+      <div>
+        <div>
+          <Navbar idFarmer={idAsInt} fname={fname} lname={lname}></Navbar>
+        </div>
+        {/* <div className="basis-[16%] h-[100vh]">
           <Sidebar
             idFarmer={idAsInt}
             fname={farmerbyID[0]?.fname}
             lname={farmerbyID[0]?.lname}
           />
-        </div>
-        <div className="basis-[84%] border">
-          <div className="px-[30px] py-[30px]">
-            <Link
-              className="btn btn-secondary"
-              style={{ float: "right" }}
-              to={`/CreateRicecrop/${id}`}
+          
+        </div> */}
+        {/* <div className="basis-[84%] border"> */}
+        <div className="mx-32 mt-4">
+          {/* <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+            <InputLabel id="demo-select-small-label">ปี</InputLabel>
+            <Select
+              labelId="demo-select-small-label"
+              id="demo-select-small"
+              value={years}
+              label="ปี"
+              onChange={handleChange}
             >
-              สร้างรอบการปลูกข้าว
-            </Link>
-            <table className="table table-striped">
-              <thead>
-                <tr>
-                  <th className="text-center">รหัสรอบการปลูก</th>
-                  <th className="text-center">ปี</th>
-                  <th className="text-center">วันที่ปลูก</th>
-                  <th className="text-center">วันที่เก็บเกี่ยว</th>
-                  <th className="text-center">พันธ์ุข้าว</th>
-                  <th className="text-center">พื้นที่ปลูก (ไร่)</th>
-                  <th className="text-center">เพิ่มรายรับ</th>
-                  <th className="text-center">เพิ่มรายจ่าย</th>
-                  <th className="text-center">ดูรายละเอียด</th>
-                  {/* <th className="text-center">รหัสเกษตรกร</th> */}
-                </tr>
-              </thead>
-              <tbody>
-                {databyID.map((ricecrop) => (
-                  <tr key={uuid()}>
-                    <td className="text-center">{ricecrop.id}</td>
-                    <td className="text-center">{ricecrop.year}</td>
-                    <td className="text-center">
-                      {formatDate(ricecrop.startDate)}
-                    </td>
-                    <td className="text-center">
-                      {formatDate(ricecrop.endDate)}
-                    </td>
-                    <td className="text-center">{ricecrop.riceVarietie}</td>
-                    <td className="text-center">{ricecrop.area}</td>
-                    <td className="text-center">
-                      <Link
-                        className="btn btn-success"
-                        to={`/Income/${idAsInt}/${ricecrop.id}`}
-                      >
-                        รายรับ
-                      </Link>
-                    </td>
-                    <td className="text-center">
-                      <Link
-                        className="btn btn-danger"
-                        to={`/Expense/${idAsInt}/${ricecrop.id}`}
-                      >
-                        รายจ่าย
-                      </Link>
-                    </td>
-                    <td className="text-center">
-                      <Link
-                        className="btn btn-primary"
-                        to={`/RicecropDetail/${idAsInt}/${ricecrop.id}`}
-                      >
-                        ดูรายละเอียด
-                      </Link>
-                    </td>
-                    {/* <td className="text-center">{ricecrop.farmerID}</td> */}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+              <MenuItem value="">ทั้งหมด</MenuItem>
+              {ricecrop.map((year, index) => (
+                <MenuItem key={index} value={year.year}>
+                  {year.year}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl> */}
+          <div className="mb-4 " align="right">
+            <AddRicecrop idFarmer={idAsInt} />
           </div>
+          <Paper sx={{ width: "100%", overflow: "hidden" }}>
+            <TableContainer sx={{ maxHeight: 650 }}>
+              <Table stickyHeader aria-label="sticky table">
+                <TableHead>
+                  <TableRow>
+                    <TableCell>ลำดับที่</TableCell>
+                    <TableCell>ปี</TableCell>
+                    <TableCell>วันที่ปลูก</TableCell>
+                    <TableCell>วันที่เก็บเกี่ยว</TableCell>
+                    <TableCell>พันธ์ุข้าว</TableCell>
+                    <TableCell>พื้นที่ (ไร่)</TableCell>
+                    <TableCell>รายรับ</TableCell>
+                    <TableCell>รายจ่าย</TableCell>
+                    <TableCell>รายละเอียด</TableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {ricecrop
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .map((row, index) => {
+                      return (
+                        <TableRow
+                          hover
+                          role="checkbox"
+                          tabIndex={-1}
+                          key={index}
+                        >
+                          <TableCell>{index + 1}</TableCell>
+                          <TableCell>{row.year}</TableCell>
+                          <TableCell>{formatDate(row.startDate)}</TableCell>
+                          <TableCell>{formatDate(row.endDate)}</TableCell>
+                          <TableCell>{row.riceVarietie}</TableCell>
+                          <TableCell>{row.area}</TableCell>
+                          <TableCell>
+                            <AddIncome
+                              idFarmer={row.farmerID}
+                              idRicecrop={row.id}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <AddExpense
+                              idFarmer={row.farmerID}
+                              idRicecrop={row.id}
+                            />
+                          </TableCell>
+                          <TableCell>
+                            <Link to={`/RicecropDetail/${idAsInt}/${row.id}`}>
+                              <Button variant="outlined" size="small">
+                                <RemoveRedEyeIcon />
+                              </Button>
+                            </Link>
+                          </TableCell>
+                        </TableRow>
+                      );
+                    })}
+                </TableBody>
+              </Table>
+            </TableContainer>
+            <TablePagination
+              rowsPerPageOptions={[10, 25, 100]}
+              component="div"
+              count={ricecrop.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            />
+          </Paper>
         </div>
       </div>
-    </UserContext.Provider>
+      {/* </div> */}
+    </div>
   );
 };
 

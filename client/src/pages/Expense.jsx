@@ -6,18 +6,19 @@ import axios from "axios";
 const Expense = () => {
   const { idFarmer, idRicecrop } = useParams();
   const [values, setValues] = useState({
-    amount: "",
-    date: new Date().toISOString().split('T')[0], 
+    price: "",
+    date: new Date().toISOString().split("T")[0],
     detail: "",
     farmerID: idFarmer,
     ricecropID: idRicecrop,
+    type: "รายจ่าย",
   });
   const navigate = useNavigate();
 
   function handleSubmit(e) {
     e.preventDefault();
     axios
-      .post("/api/expense/addExpense", values)
+      .post("/api/incomeExpense/addIncomeExpense", values)
       .then((res) => console.log(res))
       .catch((err) => console.log(err));
     alert("บันทึกรายจ่ายเสร็จสิ้น");
@@ -45,7 +46,7 @@ const Expense = () => {
     };
     fetchData();
   });
-  
+
   return (
     <div className="flex">
       <div className="basis-[16%] h-[100vh]">
@@ -88,7 +89,7 @@ const Expense = () => {
                     </label>
                   </div>
                   <div className="mt-2">
-                  <select
+                    <select
                       id="detail"
                       name="detail"
                       required
@@ -100,22 +101,21 @@ const Expense = () => {
                     >
                       <option value="">-- เลือกรายการ --</option>
                       {[
-                        "ไถนา",
-                        "เมล็ดพันธ์ุข้าว",
-                        "ปั่นนา",
                         "จ้างคนย่ำนา",
-                        "รถดำนา",
-                        "ค่าจ้างคนหว่านเมล็ดพันธุ์ข้าว",
-                        "ปุ๋ยเคมี",
+                        "ค่าจ้างคนหว่านเมล็ดพันธ์ข้าว",
                         "ค่าจ้างคนหว่านปุ๋ยเคมี",
+                        "น้ำมันเชื้อเพลิง",
+                        "ปั่นนา",
+                        "ปุ๋ยเคมี",
                         "รถดำนา",
+                        "รถเกี่ยว",
+                        "รถเข็นข้าว",
+                        "เช่านา",
+                        "เมล็ดพันธ์ข้าว",
                         "ยาคุมหญ้า",
                         "ยาป้องกันแมลง",
                         "ยาฆ่าแมลง",
-                        "น้ำมันเชื้อเพลิง",
-                        "เช่านา",
-                        "รถเข็นข้าว",
-                        "รถเกี่ยว"
+                        "ไถนา"
                       ].map((list, index) => (
                         <option key={index} value={list}>
                           {list}
@@ -123,34 +123,23 @@ const Expense = () => {
                       ))}
                     </select>
 
-                    {/* <input
-                      id="detail"
-                      name="detail"
-                      type="text"
-                      autoComplete="datail"
-                      required
-                      onChange={(e) =>
-                        setValues({ ...values, datail: e.target.value })
-                      }
-                      className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                    /> */}
                   </div>
                 </div>
                 <div>
                   <div className="flex items-center justify-between">
                     <label className="block text-sm font-medium leading-6 text-gray-900">
-                      ราคา 
+                      ราคา
                     </label>
                   </div>
                   <div className="mt-2">
                     <input
-                      id="amount"
-                      name="amount"
+                      id="price"
+                      name="price"
                       type="number"
-                      autoComplete="amount"
+                      autoComplete="price"
                       required
                       onChange={(e) =>
-                        setValues({ ...values, amount: e.target.value })
+                        setValues({ ...values, price: e.target.value })
                       }
                       className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                     />

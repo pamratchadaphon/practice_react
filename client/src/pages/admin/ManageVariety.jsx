@@ -87,7 +87,6 @@ const ManageVariety = () => {
                 <TableRow>
                   <StyledTableCell>รหัสรอบการปลูก</StyledTableCell>
                   <StyledTableCell>ชื่อพันธุ์ข้าว</StyledTableCell>
-                  <StyledTableCell>รูปภาพ</StyledTableCell>
                   <StyledTableCell>คุณสมบัติ</StyledTableCell>
                   <StyledTableCell>ความไวแสง</StyledTableCell>
                   <StyledTableCell>อายุ</StyledTableCell>
@@ -103,9 +102,6 @@ const ManageVariety = () => {
                   <StyledTableRow key={index}>
                     <StyledTableCell>{variety.id}</StyledTableCell>
                     <StyledTableCell>{variety.name}</StyledTableCell>
-                    <StyledTableCell>
-                      <img src={variety.img} alt="" width={"100px"} />
-                    </StyledTableCell>
                     <StyledTableCell>{variety.feature}</StyledTableCell>
                     <StyledTableCell>{variety.sensitivity}</StyledTableCell>
                     <StyledTableCell>{variety.softness}</StyledTableCell>

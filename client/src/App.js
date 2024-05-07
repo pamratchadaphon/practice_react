@@ -3,10 +3,6 @@ import { BrowserRouter, Routes, Route} from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 import RicecropList from './pages/RicecropList'
-// import AddFarmer from './farmers/AddFarmer'
-// import EditFarmer from './farmers/EditFarmer'
-// import ShowFarmers from './farmers/ShowFarmers'
-// import FarmerDetail from './farmers/FarmerDetail'
 import RicecropDetail from './pages/RicecropDetail'
 import CreateRicecrop from './pages/CreateRicecrop'
 import Login from './pages/Login'
@@ -20,16 +16,13 @@ import Disease from './pages/Disease.jsx';
 import DiseaseDetail from './pages/DiseaseDetail.jsx';
 import ManageVariety from './pages/admin/ManageVariety.jsx';
 import AddVariety from './pages/admin/AddVariety.jsx';
-
+import Detail from './pages/Detail.jsx';
+import Home from './pages/Home.jsx'
 
 const App = () => {
   return (
     <BrowserRouter>
       <Routes>
-        {/* <Route path='/addFarmer' element={<AddFarmer/>}/>
-        <Route path='/farmers' element={<ShowFarmers/>}/>
-        <Route path='/farmer/edit/:id' element={<EditFarmer/>}/>
-        <Route path='/farmer/:id' element={<FarmerDetail/>}/> */}
         <Route path='/ricecrop/:id' element={<RicecropList/>}/>
         <Route path='/RicecropDetail/:idFarmer/:idRicecrop' element={<RicecropDetail/>}/>
         <Route path='/register' element={<Register/>}/>
@@ -44,6 +37,8 @@ const App = () => {
         <Route path='/diseaseDetail/:idFarmer/:idDisease' element={<DiseaseDetail/>}/>
         <Route path='/manageVariety' element={<ManageVariety/>}/>
         <Route path='/addVariety' element={<AddVariety/>}/>
+        <Route path='/detail/:idFarmer/:idRicecrop' element={<Detail/>}/>
+        <Route path='/home' element={<Home/>}/>
       </Routes>
     </BrowserRouter>
   )

@@ -4,12 +4,13 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import { TextField, Button } from "@mui/material";
 
-const CreateRicecrop = () => {
+const Income = () => {
   const { idFarmer, idRicecrop } = useParams();
   const [values, setValues] = useState({
-    incomeDate: new Date().toISOString().split("T")[0],
-    incomeDetails: "",
-    amount: "",
+    date: new Date().toISOString().split("T")[0],
+    detail: "",
+    price: "",
+    type: "รายรับ",
     farmerID: idFarmer,
     ricecropID: idRicecrop,
   });
@@ -18,7 +19,7 @@ const CreateRicecrop = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("/api/income/addIncome", values)
+      .post("/api/incomeExpense/addIncomeExpense", values)
       .then((res) => {
         const date = new Date(res.data.incomeDate);
         const month = date.getMonth() + 1;
@@ -83,11 +84,11 @@ const CreateRicecrop = () => {
                   label="วันที่"
                   type="date"
                   InputLabelProps={{ shrink: true }} // Adjust label behavior
-                  value={values.incomeDate}
+                  value={values.date}
                   onChange={(e) =>
                     setValues((prevState) => ({
                       ...prevState,
-                      incomeDate: e.target.value,
+                      date: e.target.value,
                     }))
                   }
                 />
@@ -99,11 +100,11 @@ const CreateRicecrop = () => {
                   label="รายการ"
                   type="text"
                   InputLabelProps={{ shrink: true }}
-                  value={values.incomeDetails}
+                  value={values.detail}
                   onChange={(e) =>
                     setValues((prevState) => ({
                       ...prevState,
-                      incomeDetails: e.target.value,
+                      detail: e.target.value,
                     }))
                   }
                 />
@@ -115,11 +116,11 @@ const CreateRicecrop = () => {
                   label="ราคา"
                   type="number"
                   InputLabelProps={{ shrink: true }}
-                  value={values.amount}
+                  value={values.price}
                   onChange={(e) =>
                     setValues((prevState) => ({
                       ...prevState,
-                      amount: e.target.value,
+                      price: e.target.value,
                     }))
                   }
                 />
@@ -140,4 +141,4 @@ const CreateRicecrop = () => {
   );
 };
 
-export default CreateRicecrop;
+export default Income;

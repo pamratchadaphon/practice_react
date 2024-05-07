@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
-import Sidebar from "../components/Sidebar";
 import { Link, useParams } from "react-router-dom";
+import Navbar from "../components/Navbar";
 import axios from "axios";
 import {
   BarChart,
@@ -9,13 +9,15 @@ import {
   YAxis,
   CartesianGrid,
   Tooltip,
-  Legend,
-  Label,
+  Legend
 } from "recharts";
 import Chart from "chart.js/auto";
+import { Button } from "@mui/material";
+
 
 const RicecropDetail = () => {
   const { idFarmer, idRicecrop } = useParams();
+  const idAsInt = Number(idFarmer);
   const [data, setData] = useState({});
   const [totalIncome, setTotalIncome] = useState(0);
   const [totalExpense, setTotalExpense] = useState(0);
@@ -23,9 +25,9 @@ const RicecropDetail = () => {
   const [mape, setMape] = useState(Array.from({ length: 12 }, () => 0));
   const [startMonth, setStartMonth] = useState(1);
   const [endMonth, setEndMonth] = useState(12);
-  // const [income, setIncome] = useState([])
-  // const [expense, setExpense] = useState([])
   const chartRef = useRef(null);
+  const [fname, setFirstName] = useState("");
+  const [lname, setLastName] = useState("");
 
   const data1 = [];
 
@@ -137,11 +139,65 @@ const RicecropDetail = () => {
           config
         );
         if (authResponse.data.status === "ok") {
+          const farmerResponse = await axios.get(`/api/farmer/${idAsInt}`);
+          setFirstName(farmerResponse.data.fname);
+          setLastName(farmerResponse.data.lname);
           const ricecropResponse = await axios.get(
             `/api/ricecrop/getRicecropIncomeExpense/${idRicecrop}`
           );
           setData(ricecropResponse.data[0]);
-          // setIncome(ricecropResponse.data[0]?.Income);
+          const arrIncome = [];
+          const arrExpense = [];
+          const arrMonthIncome = [];
+          const arrMonthExpense = [];
+          const arrPriceIncome = [];
+          const arrPriceExpense = [];
+          for (
+            let i = 0;
+            i < ricecropResponse.data[0].IncomeExpense.length;
+            i++
+          ) {
+            if (ricecropResponse.data[0].IncomeExpense[i].type === "รายรับ") {
+              const date = new Date(
+                ricecropResponse.data[0].IncomeExpense[i].date
+              );
+              const month = date.getMonth() + 1;
+              arrMonthIncome[i] = month;
+              arrPriceIncome[i] =
+                ricecropResponse.data[0].IncomeExpense[i].price;
+
+              arrIncome[i] = ricecropResponse.data[0].IncomeExpense[i];
+            } else {
+              const date = new Date(
+                ricecropResponse.data[0].IncomeExpense[i].date
+              );
+              const month = date.getMonth() + 1;
+              arrMonthExpense[i] = month;
+              arrPriceExpense[i] =
+                ricecropResponse.data[0].IncomeExpense[i].price;
+              arrExpense[i] = ricecropResponse.data[0].IncomeExpense[i];
+            }
+          }
+
+          for (let i = 0; i < arrMonthIncome.length; i++) {
+            const monthIndex = arrMonthIncome[i] - 1;
+
+            setMapi((prevState) => {
+              const newState = [...prevState];
+              newState[monthIndex] += arrPriceIncome[i] / 2;
+              return newState;
+            });
+          }
+
+          for (let i = 0; i < arrMonthExpense.length; i++) {
+            const monthIndex = arrMonthExpense[i] - 1;
+
+            setMape((prevState) => {
+              const newState = [...prevState];
+              newState[monthIndex] += arrPriceExpense[i] / 2;
+              return newState;
+            });
+          }
 
           const startDate = new Date(ricecropResponse.data[0].startDate);
           const startMonth = startDate.getMonth() + 1;
@@ -151,24 +207,16 @@ const RicecropDetail = () => {
           const endMonth = endDate.getMonth() + 1;
           setEndMonth(endMonth);
 
-          // คำนวณผลรวมของรายรับ
           const totalIncome =
-            ricecropResponse.data[0]?.Income?.reduce(
-              (accumulator, currentValue) => {
-                return accumulator + parseInt(currentValue.amount);
-              },
-              0
-            ) || 0;
+            arrIncome.reduce((accumulator, currentValue) => {
+              return accumulator + parseInt(currentValue.price);
+            }, 0) || 0;
           setTotalIncome(totalIncome);
 
-          // คำนวณผลรวมของรายจ่าย
           const totalExpense =
-            ricecropResponse.data[0]?.Expense?.reduce(
-              (accumulator, currentValue) => {
-                return accumulator + parseInt(currentValue.amount);
-              },
-              0
-            ) || 0;
+            arrExpense.reduce((accumulator, currentValue) => {
+              return accumulator + parseInt(currentValue.price);
+            }, 0) || 0;
           setTotalExpense(totalExpense);
         } else {
           alert("Authentication failed");
@@ -180,87 +228,47 @@ const RicecropDetail = () => {
       }
     };
     fetchData();
-  }, [idRicecrop]);
-
-  useEffect(() => {
-    const monthI =
-      data?.Income?.map((income) => {
-        const incomeDate = new Date(income.incomeDate);
-        const month = incomeDate.getMonth() + 1;
-        return `${month}`;
-      }) || [];
-
-    const monthE =
-      data?.Expense?.map((expense) => {
-        const expenseDate = new Date(expense.date);
-        const month = expenseDate.getMonth() + 1;
-        return `${month}`;
-      }) || [];
-
-    const income = data?.Income?.map((income) => income.amount) || [];
-    const expense = data?.Expense?.map((expense) => expense.amount) || [];
-
-    for (let i = 0; i < monthE.length; i++) {
-      const monthIndex = parseInt(monthE[i]) - 1;
-
-      setMape((prevState) => {
-        const newState = [...prevState];
-        console.log(newState);
-        newState[monthIndex] += expense[i] / 2;
-        return newState;
-      });
-    }
-
-    for (let i = 0; i < monthI.length; i++) {
-      const monthIndex = parseInt(monthI[i]) - 1;
-
-      setMapi((prevState) => {
-        const newState = [...prevState];
-        newState[monthIndex] += income[i] / 2;
-        return newState;
-      });
-    }
-  }, [data]);
+  }, [idRicecrop, idAsInt]);
 
   // ฟังก์ชันสำหรับการแปลงวันที่ให้เป็นรูปแบบ "dd-mm-yyyy"
   const formatDate = (dateString) => {
     const date = new Date(dateString);
     const day = date.getDate();
     const month = date.getMonth() + 1;
-    const year = date.getFullYear() + 543;
+    const year = date.getFullYear() ;
     return `${day < 10 ? "0" + day : day}/${
       month < 10 ? "0" + month : month
     }/${year}`;
   };
 
   return (
-    <div className="flex bg-gray-100">
-      <div className="basis-[16%] h-[100vh]">
-        <Sidebar idFarmer={idFarmer} />
+    <div className=" bg-gray-100">
+      <div>
+        <Navbar idFarmer={idFarmer} fname={fname} lname={lname} />
       </div>
-      <div className="basis-[84%] border">
-        <div className="px-[30px] py-[2px] pt-[30px] text-center font-bold text-lg">
+      <div className="mx-32">
+        <div className=" py-[2px] pt-[30px] text-center font-bold text-lg">
           ปีที่ทำการปลูก {data.year}
         </div>
-        <div className="px-[30px] py-[2px]">
-          วันที่ปลูก {formatDate(data.startDate)}
+
+        <div>
+          <div className=" py-[2px]">
+            วันที่ปลูก {formatDate(data.startDate)}
+          </div>
+          <div className=" py-[2px]">
+            วันที่เก็บเกี่ยว {formatDate(data.endDate)}
+          </div>
+          <div className="py-[2px]">พันธ์ุข้าว {data.riceVarietie}</div>
         </div>
-        <div className="px-[30px] py-[2px]">
-          วันที่เก็บเกี่ยว {formatDate(data.endDate)}
-        </div>
-        <div className="px-[30px] py-[2px]">
-          พันธ์ุข้าว {data.riceVarietie}
-        </div>
-        <div className="px-[30px] py-[2px]">
-          <Link
-            to={`/RicecropDetailMonth/${idFarmer}/${idRicecrop}`}
-            className="btn btn-primary"
-          >
-            รายละเอียดเพิ่มเติม
-          </Link>
+        <div>
+          <div className=" py-[2px]">
+            <Link to={`/detail/${idFarmer}/${idRicecrop}`}>
+              <Button variant="contained">รายละเอียดเพิ่มเติม</Button>
+            </Link>
+          </div>
         </div>
 
-        <div className="px-4 py-2 pt-16">
+        <div className=" py-2 pt-16">
           <div className="flex flex-wrap -mx-2">
             <div className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 px-2 mb-4">
               <div className="border p-4 bg-sky-300 flex flex-col h-full rounded-2xl">
@@ -287,20 +295,16 @@ const RicecropDetail = () => {
               </div>
             </div>
           </div>
-          <div className="bg-white py-4 shadow-lg rounded-2xl flex">
-            <div className="px-4">
+          <div className="bg-white py-4 shadow-lg rounded-2xl flex flex-wrap">
+            <div className="ml-16">
               <span>กราฟแสดงรายรับ-รายจ่ายในแต่ละเดือน</span>
-              <BarChart width={830} height={300} data={data1}>
+              <BarChart width={750} height={270} data={data1}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name">
-                  <Label value="เดือน" offset={-5} position="right" />
+                  {/* <Label value="เดือน" offset={-5} position="right" /> */}
                 </XAxis>
                 <YAxis>
-                  <Label
-                    value="ราคา (บาท)"
-                    offset={-30}
-                    position="insideTop"
-                  />
+                  {/* <Label value="ราคา (บาท)" offset={-30} position="insideTop" /> */}
                 </YAxis>
                 <Tooltip />
                 <Legend verticalAlign="top" height={36} align="right" />
@@ -315,55 +319,17 @@ const RicecropDetail = () => {
                   label={{ position: "top" }}
                 />
               </BarChart>
+              
             </div>
-            <div className="pl-5">
+            <div className="ml-14">
               <span>กราฟแสดงรายรับ-รายจ่ายทั้งหมด</span>
-              <canvas ref={chartRef} width={200} height={200} />
+              <canvas ref={chartRef} width={250} height={250} />
             </div>
           </div>
-          {/* <div style={{ width: "50%", paddingLeft: "10px" }}>
-              <span>รายจ่าย</span>
-              <div>
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>วันที่</th>
-                      <th>รายการ</th>
-                      <th>ราคา</th>
-                      <th>แก้ไข</th>
-                      <th>ลบ</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {income.map((income) => (
-                      <tr key={income.id}>
-                        <td>{formatDate(income.incomeDate)}</td>
-                        <td>{income.incomeDetails}</td>
-                        <td>{income.amount.toLocaleString()}</td>
-                        <td>
-                          <FaPencilAlt style={{ color: "green" }} />
-                        </td>
-                        <td>
-                          <FiTrash2
-                            style={{ color: "red" }}
-                            onClick={() => onClickDeleteExpense(expense.id)}
-                          />
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                <IncomeModal
-                  open={open}
-                  handleClose={handleClose}
-                  income={selectedIncome}
-                  selectedMonth={monthInt}
-                />
-              </div>
-            </div> */}
         </div>
       </div>
     </div>
+    // </div>
   );
 };
 
