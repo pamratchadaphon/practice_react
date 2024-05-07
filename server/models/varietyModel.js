@@ -9,7 +9,8 @@ module.exports = (sequelize, Sequelize) => {
         softness: DataTypes.STRING,
         product: DataTypes.STRING,
         stability: DataTypes.STRING,
-        img: DataTypes.STRING,
+        warning:DataTypes.STRING,
+        strength: DataTypes.STRING
     });
 
     return Variety;

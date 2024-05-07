@@ -34,6 +34,9 @@ app.use('/api/income', routerIncome)
 const routerExpense = require('./routes/expenseRoutes')
 app.use('/api/expense', routerExpense)
 
+const routerIncomeExpense = require('./routes/incomeExpenseRouter')
+app.use('/api/incomeExpense', routerIncomeExpense)
+
 app.get('/',(req,res) => {
     res.json({ message : 'hii'})
 })
